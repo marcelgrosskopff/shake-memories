@@ -21,11 +21,13 @@ export function StoryCard({ story }: { story: Story }) {
   const reactionsCount = story.reactions_count || {}
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-shake-light/20 bg-shake-dark/80 backdrop-blur-sm">
+    <div className="glass-card gradient-border card-depth overflow-hidden rounded-2xl">
       {/* Header */}
       <div className="flex items-center gap-3 p-4 pb-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-shake-neon-pink/30 to-shake-neon-purple/30 text-lg">
-          🪩
+        <div className="avatar-ring">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-shake-dark text-lg">
+            🪩
+          </div>
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
@@ -68,7 +70,7 @@ export function StoryCard({ story }: { story: Story }) {
               <img
                 src={url}
                 alt=""
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                 loading="lazy"
               />
               {i === 3 && story.media_urls.length > 4 && (
@@ -94,7 +96,7 @@ export function StoryCard({ story }: { story: Story }) {
           {Object.entries(reactionsCount).map(([type, count]) => (
             <span
               key={type}
-              className="inline-flex items-center gap-1 rounded-full bg-shake-light/30 px-2 py-0.5 text-xs"
+              className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-0.5 text-xs backdrop-blur-sm"
             >
               {REACTION_EMOJIS[type as ReactionType]} {String(count)}
             </span>
@@ -103,7 +105,7 @@ export function StoryCard({ story }: { story: Story }) {
       )}
 
       {/* Actions */}
-      <div className="flex items-center border-t border-shake-light/10 px-2">
+      <div className="flex items-center border-t border-white/[0.06] px-2">
         <div className="relative">
           <button
             onClick={() => setShowReactions(!showReactions)}
@@ -113,15 +115,15 @@ export function StoryCard({ story }: { story: Story }) {
           </button>
           {showReactions && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="absolute bottom-full left-0 mb-2 flex gap-1 rounded-full border border-shake-light/30 bg-shake-dark p-2 shadow-xl"
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="glass-strong absolute bottom-full left-0 mb-2 flex gap-1 rounded-full p-2 shadow-xl"
             >
               {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
                 <button
                   key={type}
                   onClick={() => handleReaction(type as ReactionType)}
-                  className="rounded-full p-1.5 text-lg transition-transform hover:scale-125"
+                  className="rounded-full p-1.5 text-lg transition-transform hover:scale-125 hover:bg-white/10"
                 >
                   {emoji}
                 </button>

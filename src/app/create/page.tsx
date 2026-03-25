@@ -84,19 +84,31 @@ export default function CreatePage() {
   // --- Mode chooser ---
   if (mode === 'choose' && step === 'create') {
     return (
-      <div className="min-h-dvh bg-shake-black px-4 pt-8">
+      <div className="light-rays min-h-dvh bg-shake-black px-4 pt-8">
+        {/* Subtle background gradient */}
+        <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,45,120,0.08),transparent_60%)] pointer-events-none" />
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-auto max-w-lg"
+          className="relative z-10 mx-auto max-w-lg"
         >
-          <div className="mb-2 text-center text-4xl">🪩</div>
-          <h1 className="mb-2 text-center text-2xl font-bold">Deine Story erstellen</h1>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.1 }}
+            className="mb-3 text-center text-5xl"
+          >
+            🪩
+          </motion.div>
+          <h1 className="mb-2 text-center text-3xl font-bold">
+            Dini <span className="gradient-text">Story</span> erstella
+          </h1>
           <p className="mb-8 text-center text-sm text-shake-text-muted">
-            Wie möchtest du deine Shake-Erinnerung teilen?
+            Wie wottsch dini Shake-Erinnerung teila?
           </p>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="stagger-fade grid grid-cols-2 gap-3">
             {[
               {
                 mode: 'visual' as const,
@@ -104,53 +116,61 @@ export default function CreatePage() {
                 title: 'Visual Story',
                 desc: 'Filter, Sticker, Word-Art & Collagen',
                 color: 'from-shake-neon-pink to-shake-neon-purple',
+                emoji: '🎨',
               },
               {
                 mode: 'text' as const,
                 icon: Type,
                 title: 'Text Story',
-                desc: 'Klassisch - einfach deine Geschichte schreiben',
+                desc: 'Klassisch - einfach dini Gschicht schrieba',
                 color: 'from-shake-neon-blue to-shake-neon-purple',
+                emoji: '✍️',
               },
               {
                 mode: 'voice' as const,
                 icon: Mic,
                 title: 'Sprachnachricht',
-                desc: 'Erzähle deine Story als Audio',
+                desc: 'Erzähl dini Story als Audio',
                 color: 'from-shake-neon-green to-shake-neon-blue',
+                emoji: '🎙️',
               },
               {
                 mode: 'video' as const,
                 icon: Video,
                 title: 'Video',
-                desc: 'Nimm ein Video auf oder lade eins hoch',
+                desc: 'Nimm es Video uf oder lad eis ufe',
                 color: 'from-shake-warm to-shake-neon-pink',
+                emoji: '🎬',
               },
               {
                 mode: 'template' as const,
                 icon: Camera,
                 title: 'Spezial-Templates',
-                desc: '"Damals vs. Heute", "Mein 1. Mal", und mehr',
+                desc: '"Damals vs. Hüt", "Mis 1. Mal", und meh',
                 color: 'from-shake-gold to-shake-warm',
                 span: true,
+                emoji: '📸',
               },
             ].map((item) => (
               <motion.button
                 key={item.mode}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setMode(item.mode)}
                 className={cn(
-                  'flex flex-col items-start gap-2 rounded-2xl border border-shake-light/20 bg-shake-dark/80 p-4 text-left transition-all hover:border-shake-neon-pink/30',
+                  'glass-card gradient-border flex flex-col items-start gap-3 rounded-2xl p-4 text-left',
                   item.span && 'col-span-2'
                 )}
               >
-                <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br', item.color)}>
-                  <item.icon className="h-5 w-5 text-white" />
+                <div className={cn('flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg', item.color)}>
+                  <item.icon className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <div className="font-medium text-shake-text">{item.title}</div>
-                  <div className="text-xs text-shake-text-muted">{item.desc}</div>
+                  <div className="flex items-center gap-1.5 font-semibold text-shake-text">
+                    {item.title}
+                    <span className="text-sm">{item.emoji}</span>
+                  </div>
+                  <div className="mt-0.5 text-xs text-shake-text-muted leading-relaxed">{item.desc}</div>
                 </div>
               </motion.button>
             ))}
