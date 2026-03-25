@@ -15,7 +15,7 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
       {/* Glass background */}
       <div className="absolute inset-0 bg-shake-black/70 backdrop-blur-2xl border-t border-white/[0.06]" />
 

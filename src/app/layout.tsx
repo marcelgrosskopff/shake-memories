@@ -15,10 +15,16 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: 'Shake Memories - Erinnerungen die bleiben',
+  title: 'Shake Memories',
   description:
-    'Teile deine Erinnerungen an das K-Shake, Vabrik & Shake. 35 Jahre Clubkultur in Rothis - erzähle deine Geschichte.',
+    '35 Jahre Clubkultur in Rothis - Teile deine Erinnerungen an das K-Shake, Vabrik & Shake.',
   keywords: ['K-Shake', 'Shake', 'Vabrik', 'Rothis', 'Vorarlberg', 'Nachtclub', 'Erinnerungen'],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Shake Memories',
+  },
   openGraph: {
     title: 'Shake Memories',
     description: '35 Jahre Clubkultur - Deine Erinnerungen an das Shake',
@@ -32,6 +38,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   themeColor: '#0a0a0a',
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -41,11 +48,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de" className={`${spaceGrotesk.variable} ${outfit.variable} dark`}>
+      <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+      </head>
       <body className="min-h-dvh bg-shake-black text-shake-text font-sans antialiased">
-        <Providers>
-          <main className="pb-20">{children}</main>
-          <BottomNav />
-        </Providers>
+        {/* Safe area for notch devices */}
+        <div className="min-h-dvh pb-[env(safe-area-inset-bottom)]">
+          <Providers>
+            <main className="pb-20">{children}</main>
+            <BottomNav />
+          </Providers>
+        </div>
       </body>
     </html>
   )

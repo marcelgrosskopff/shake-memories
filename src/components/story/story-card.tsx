@@ -109,7 +109,7 @@ export function StoryCard({ story }: { story: Story }) {
         <div className="relative">
           <button
             onClick={() => setShowReactions(!showReactions)}
-            className="flex items-center gap-1 px-3 py-3 text-xs text-shake-text-muted transition-colors hover:text-shake-neon-pink"
+            className="flex items-center gap-1.5 px-3 py-3 text-xs text-shake-text-muted active:text-shake-neon-pink"
           >
             ❤️ Reagieren
           </button>
@@ -117,13 +117,13 @@ export function StoryCard({ story }: { story: Story }) {
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="glass-strong absolute bottom-full left-0 mb-2 flex gap-1 rounded-full p-2 shadow-xl"
+              className="glass-strong absolute bottom-full left-0 mb-2 flex gap-1 rounded-full p-1.5 shadow-xl z-50"
             >
               {Object.entries(REACTION_EMOJIS).map(([type, emoji]) => (
                 <button
                   key={type}
                   onClick={() => handleReaction(type as ReactionType)}
-                  className="rounded-full p-1.5 text-lg transition-transform hover:scale-125 hover:bg-white/10"
+                  className="rounded-full p-2 text-2xl active:scale-110 active:bg-white/10"
                 >
                   {emoji}
                 </button>
@@ -134,7 +134,7 @@ export function StoryCard({ story }: { story: Story }) {
 
         <Link
           href={`/create?reply=${story.id}`}
-          className="flex items-center gap-1 px-3 py-3 text-xs text-shake-text-muted transition-colors hover:text-shake-neon-blue"
+          className="flex items-center gap-1.5 px-3 py-3 text-xs text-shake-text-muted active:text-shake-neon-blue"
         >
           <MessageCircle className="h-4 w-4" /> Antworten
         </Link>
