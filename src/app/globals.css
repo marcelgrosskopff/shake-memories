@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-shake-black: #0a0a0a;
+  --color-shake-dark: #141414;
+  --color-shake-gray: #1e1e1e;
+  --color-shake-light: #2a2a2a;
+  --color-shake-neon-pink: #ff2d78;
+  --color-shake-neon-blue: #00d4ff;
+  --color-shake-neon-purple: #b44dff;
+  --color-shake-neon-green: #39ff14;
+  --color-shake-gold: #ffd700;
+  --color-shake-warm: #ff8c42;
+  --color-shake-text: #f0f0f0;
+  --color-shake-text-muted: #888888;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: #0a0a0a;
+  --color-foreground: #f0f0f0;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-shake-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-shake-light);
+  border-radius: 2px;
+}
+
+/* Neon glow effects */
+.neon-glow-pink {
+  text-shadow: 0 0 7px var(--color-shake-neon-pink), 0 0 10px var(--color-shake-neon-pink), 0 0 21px var(--color-shake-neon-pink);
+}
+.neon-glow-blue {
+  text-shadow: 0 0 7px var(--color-shake-neon-blue), 0 0 10px var(--color-shake-neon-blue), 0 0 21px var(--color-shake-neon-blue);
+}
+.neon-border-pink {
+  box-shadow: 0 0 5px var(--color-shake-neon-pink), inset 0 0 5px var(--color-shake-neon-pink);
+}
+.neon-border-blue {
+  box-shadow: 0 0 5px var(--color-shake-neon-blue), inset 0 0 5px var(--color-shake-neon-blue);
+}
+
+/* Disco ball shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.disco-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,215,0,0.1) 25%, rgba(255,215,0,0.3) 50%, rgba(255,215,0,0.1) 75%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-shake-neon-pink), var(--color-shake-neon-blue), var(--color-shake-neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Pulse animation for CTA */
+@keyframes pulse-neon {
+  0%, 100% { box-shadow: 0 0 5px var(--color-shake-neon-pink), 0 0 10px var(--color-shake-neon-pink); }
+  50% { box-shadow: 0 0 10px var(--color-shake-neon-pink), 0 0 20px var(--color-shake-neon-pink), 0 0 30px var(--color-shake-neon-pink); }
+}
+.pulse-neon {
+  animation: pulse-neon 2s ease-in-out infinite;
 }
