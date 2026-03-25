@@ -83,16 +83,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  // Trigger moderation asynchronously
+  // Trigger moderation (await it so story gets approved before response)
   try {
     const moderateUrl = new URL('/api/moderate', req.url)
-    fetch(moderateUrl.toString(), {
+    const modResult = await fetch(moderateUrl.toString(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ story_id: data.id, content_text }),
-    }).catch(() => {}) // Fire and forget
-  } catch {
-    // Moderation will happen via a cron job as fallback
+    })
+    const modData = await modResult.json()
+    data.moderation_status = modData.approved ? 'approved' : 'rejected'
+  } catch (e) {
+    console.error('Moderation call failed:', e)
+    // Story stays as 'pending' - will need manual approval
   }
 
   return NextResponse.json(data, { status: 201 })

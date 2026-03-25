@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Use service role key for moderation (bypasses RLS)
-function getServiceSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+function getSupabase() {
+  // Use service role key if available, otherwise fall back to anon key
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, key)
 }
 
 export async function POST(req: NextRequest) {
@@ -16,11 +14,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
   }
 
-  const supabase = getServiceSupabase()
+  const supabase = getSupabase()
   let approved = true
   let reason = ''
 
-  // Layer 1: OpenAI Moderation API (if key available)
+  // Layer 1: OpenAI Moderation API (free, catches harmful content)
   if (process.env.OPENAI_API_KEY) {
     try {
       const modResponse = await fetch('https://api.openai.com/v1/moderations', {
@@ -39,7 +37,6 @@ export async function POST(req: NextRequest) {
       }
     } catch (e) {
       console.error('Moderation API error:', e)
-      // Continue to layer 2
     }
 
     // Layer 2: Good vibes check via GPT-4o-mini
@@ -61,15 +58,15 @@ export async function POST(req: NextRequest) {
 
 Bewerte den Text und antworte mit JSON: {"approved": true/false, "reason": "string"}
 
-GENEHMIGE: Nostalgische, lustige, herzliche, "bsoffene" (betrunkene aber harmlose) Geschichten, Liebesgeschichten, Freundschaftsgeschichten, Party-Erinnerungen.
+GENEHMIGE: Nostalgische, lustige, herzliche, "bsoffene" (betrunkene aber harmlose) Geschichten, Liebesgeschichten, Freundschaftsgeschichten, Party-Erinnerungen, Witze, Anekdoten.
 
-ABLEHNEN: Hassrede, persönliche Angriffe auf andere Personen, Diskriminierung, explizite sexuelle Inhalte, Drogenverherrlichung, Gewalt, Negativität gegenüber dem Club oder dessen Betreiber, Spam, Werbung.
+ABLEHNEN NUR bei: Hassrede, persönliche Angriffe auf namentlich genannte reale Personen, Diskriminierung, explizit sexuelle Inhalte, Drogenverherrlichung, Gewaltverherrlichung, Spam, Werbung.
 
-Sei großzügig - das sind Party-Erinnerungen, da darf es lustig und wild sein. Good vibes only!`,
+Sei großzügig - das sind Party-Erinnerungen, da darf es lustig und wild sein. Im Zweifel genehmigen. Good vibes only!`,
               },
               { role: 'user', content: content_text },
             ],
-            max_tokens: 100,
+            max_tokens: 150,
           }),
         })
 
@@ -81,26 +78,27 @@ Sei großzügig - das sind Party-Erinnerungen, da darf es lustig und wild sein. 
         }
       } catch (e) {
         console.error('Vibe check error:', e)
-        // If vibe check fails, auto-approve (fail open for UX)
+        // Fail open - approve if check fails
         approved = true
       }
     }
   } else {
-    // No OpenAI key: auto-approve (development mode)
+    // No OpenAI key: auto-approve (for dev/testing)
+    console.log('No OPENAI_API_KEY set - auto-approving story', story_id)
     approved = true
   }
 
   // Update story moderation status
   const { error } = await supabase
     .from('stories')
-    .update({
-      moderation_status: approved ? 'approved' : 'rejected',
-    })
+    .update({ moderation_status: approved ? 'approved' : 'rejected' })
     .eq('id', story_id)
 
   if (error) {
+    console.error('Failed to update moderation status:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  console.log(`Story ${story_id} moderation: ${approved ? 'APPROVED' : 'REJECTED'} (${reason || 'ok'})`)
   return NextResponse.json({ approved, reason })
 }
