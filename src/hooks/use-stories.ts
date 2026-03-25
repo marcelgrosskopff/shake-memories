@@ -16,7 +16,8 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
 export function useStories() {
   return useQuery<Story[]>({
     queryKey: ['stories'],
-    queryFn: () => fetchJson('/api/stories'),
+    queryFn: () => fetchJson<Story[]>('/api/stories').catch(() => []),
+    retry: false,
   })
 }
 
@@ -31,7 +32,8 @@ export function useStory(id: string) {
 export function useStoryConnections() {
   return useQuery<StoryConnection[]>({
     queryKey: ['story-connections'],
-    queryFn: () => fetchJson('/api/stories/connections'),
+    queryFn: () => fetchJson<StoryConnection[]>('/api/stories/connections').catch(() => []),
+    retry: false,
   })
 }
 
