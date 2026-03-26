@@ -208,7 +208,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
       <div className="relative">
         {/* Subtle glow behind canvas */}
         <div
-          className="absolute -inset-3 rounded-3xl opacity-50 blur-2xl"
+          className="absolute -inset-3 rounded-2xl opacity-50 blur-2xl"
           style={{ background: 'radial-gradient(ellipse at center, rgba(255,45,120,0.12), rgba(180,77,255,0.08), transparent 70%)' }}
         />
         <div
@@ -249,9 +249,9 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
             </span>
             <button
               onClick={(e) => { e.stopPropagation(); removeOverlay(overlay.id) }}
-              className="absolute -right-3 -top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black/70 text-white"
+              className="absolute -right-4 -top-4 flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-white"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         ))}
@@ -271,9 +271,9 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
             {sticker.emoji}
             <button
               onClick={(e) => { e.stopPropagation(); removeOverlay(sticker.id) }}
-              className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black/70 text-white text-[10px]"
+              className="absolute -right-3 -top-3 flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-white text-xs"
             >
-              <X className="h-3 w-3" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         ))}
@@ -281,14 +281,14 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
         {/* Empty state */}
         {textOverlays.length === 0 && stickerOverlays.length === 0 && !backgroundImage && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-white/20 text-sm text-center px-8">
+            <p className="text-white/20 text-base text-center px-8">
               W&auml;hle einen Filter, f&uuml;g Text oder Sticker hinzu
             </p>
           </div>
         )}
 
         {/* Photo upload button (top right) */}
-        <label className="absolute right-3 top-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-black/50 backdrop-blur-sm text-white">
+        <label className="absolute right-3 top-3 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-black/50 backdrop-blur-sm text-white">
           <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           <ImagePlus className="h-5 w-5" />
         </label>
@@ -316,7 +316,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
               }}
             />
             <span className={cn(
-              'text-[10px]',
+              'text-xs',
               i === selectedFilter ? 'text-shake-neon-pink font-medium' : 'text-shake-text-muted'
             )}>
               {filter.name}
@@ -344,7 +344,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
             onClick={item.action}
             className={cn(
               'flex flex-col items-center gap-1.5 transition-colors',
-              activeTool === item.tool ? 'text-shake-neon-pink' : 'text-shake-text-muted hover:text-shake-text'
+              activeTool === item.tool ? 'text-shake-neon-pink' : 'text-shake-text-muted active:text-shake-text'
             )}
           >
             <div
@@ -360,7 +360,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
             >
               <item.icon className="h-5 w-5" />
             </div>
-            <span className="text-[10px] font-medium">{item.label}</span>
+            <span className="text-xs font-medium">{item.label}</span>
           </button>
         ))}
       </div>
@@ -380,7 +380,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
                 <button
                   key={emoji}
                   onClick={() => addSticker(emoji)}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-xl hover:bg-white/10 transition-colors"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-xl active:bg-white/10 transition-colors"
                 >
                   {emoji}
                 </button>
@@ -435,7 +435,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
                         syncState()
                       }}
                       className={cn(
-                        'h-7 w-7 rounded-full border-2 transition-all',
+                        'h-11 w-11 rounded-full border-2 transition-all',
                         overlay?.color === color ? 'border-white scale-110' : 'border-transparent'
                       )}
                       style={{ backgroundColor: color }}
@@ -445,7 +445,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
               </div>
               {/* Size slider */}
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-shake-text-muted w-6">Aa</span>
+                <span className="text-xs text-shake-text-muted w-6">Aa</span>
                 <input
                   type="range" min={16} max={56}
                   value={textOverlays.find(t => t.id === editingText)?.fontSize || 28}
@@ -456,7 +456,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
                   }}
                   className="flex-1 accent-shake-neon-pink"
                 />
-                <span className="text-[10px] text-shake-text-muted w-6">AA</span>
+                <span className="text-xs text-shake-text-muted w-6">AA</span>
               </div>
             </div>
           </motion.div>
@@ -508,10 +508,10 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
                         )}
                         style={{ background: bg.value }}
                       />
-                      <span className="text-[9px] text-shake-text-muted">{bg.name}</span>
+                      <span className="text-xs text-shake-text-muted">{bg.name}</span>
                     </button>
                   ))}
-                  <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-white/20 text-white/40 hover:border-white/40">
+                  <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-white/20 text-white/40 active:border-white/40">
                     <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                     <ImagePlus className="h-5 w-5" />
                   </label>
@@ -531,7 +531,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
                         )}
                         style={{ background: bg.value }}
                       />
-                      <span className="text-[9px] text-shake-text-muted">{bg.name}</span>
+                      <span className="text-xs text-shake-text-muted">{bg.name}</span>
                     </button>
                   ))}
                 </div>
@@ -550,7 +550,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
           >
             <div className="flex items-center justify-center gap-2 rounded-xl bg-shake-dark/80 p-4 text-center">
               <Pencil className="h-5 w-5 text-shake-text-muted" />
-              <span className="text-sm text-shake-text-muted">Zeichnen kommt bald!</span>
+              <span className="text-base text-shake-text-muted">Zeichnen kommt bald!</span>
             </div>
           </motion.div>
         )}

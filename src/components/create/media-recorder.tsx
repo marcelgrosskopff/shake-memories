@@ -156,7 +156,7 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
       <div className="relative">
         {/* Glow behind recording container */}
         <div
-          className="absolute -inset-3 rounded-3xl opacity-60 blur-2xl"
+          className="absolute -inset-3 rounded-2xl opacity-60 blur-2xl"
           style={{ background: atmosphereStyles.glowBg }}
         />
         <div
@@ -196,9 +196,9 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
                     boxShadow: '0 0 30px rgba(255,140,66,0.05)',
                   }}
                 >
-                  <Video className="h-10 w-10" style={{ color: 'rgba(255,140,66,0.3)' }} />
+                  <Video className="h-10 w-10 text-shake-text-muted" />
                 </div>
-                <p className="text-sm" style={{ color: 'rgba(255,140,66,0.35)' }}>Dr&uuml;cke den roten Button</p>
+                <p className="text-base text-shake-text-muted">Dr&uuml;cke den roten Button</p>
               </div>
             )}
           </>
@@ -221,9 +221,9 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
                     boxShadow: '0 0 30px rgba(57,255,20,0.05)',
                   }}
                 >
-                  <Mic className="h-10 w-10" style={{ color: 'rgba(57,255,20,0.3)' }} />
+                  <Mic className="h-10 w-10 text-shake-text-muted" />
                 </div>
-                <p className="text-sm" style={{ color: 'rgba(57,255,20,0.35)' }}>Bereit zum Aufnehmen</p>
+                <p className="text-base text-shake-text-muted">Bereit zum Aufnehmen</p>
                 {/* Flat waveform bars for idle */}
                 <div className="flex items-center gap-[3px] h-12">
                   {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
@@ -330,7 +330,7 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
               <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5">
                 <Upload className="h-5 w-5" />
               </div>
-              <span className="text-[10px]">Hochladen</span>
+              <span className="text-xs">Hochladen</span>
             </button>
 
             {/* Large pulsing red record button (Voice Memos style) */}
@@ -368,7 +368,7 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
         {status === 'recorded' && (
           <button
             onClick={reset}
-            className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm text-shake-text-muted hover:bg-white/10 transition-colors"
+            className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-base text-shake-text-muted active:bg-white/10 transition-colors"
           >
             <RotateCcw className="h-4 w-4" /> Nochmal
           </button>
@@ -376,7 +376,7 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
       </div>
 
       {status === 'recording' && duration >= 55 && (
-        <p className="text-center text-xs text-shake-warm">Max. 60 Sekunden</p>
+        <p className="text-center text-xs text-shake-neon-pink">Max. 60 Sekunden</p>
       )}
     </div>
   )

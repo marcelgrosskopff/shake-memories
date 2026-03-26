@@ -16,112 +16,80 @@ const TEMPLATES = [
   {
     id: 'then-now',
     name: 'Damals vs. H\u00fct',
-    emoji: '\u{1F4F8}',
     icon: Star,
     description: 'Wer warsch du domols und wer bisch h\u00fct?',
     slots: [
-      { label: 'Damals', hint: 'Foto vo fr\u00fcener', placeholder: '\u{1F476}' },
-      { label: 'Heute', hint: 'Aktuells Foto', placeholder: '\u{1F60E}' },
+      { label: 'Damals', hint: 'Foto vo fr\u00fcener' },
+      { label: 'Heute', hint: 'Aktuells Foto' },
     ],
     layout: 'split' as const,
-    gradient: 'from-shake-gold/30 to-shake-warm/20',
-    accentColor: '#ffd700',
-    bgStyle: 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,66,0.05))',
   },
   {
     id: 'love-story',
     name: 'Shake Love Story',
-    emoji: '\u{2764}\u{FE0F}',
     icon: Heart,
     description: 'Hosch d\'Liebi im Shake gfunda?',
     slots: [
-      { label: 'Damals', hint: 'Wie es agfanga het', placeholder: '\u{1F496}' },
-      { label: 'Heute', hint: 'Wie es h\u00fct isch', placeholder: '\u{1F48D}' },
+      { label: 'Damals', hint: 'Wie es agfanga het' },
+      { label: 'Heute', hint: 'Wie es h\u00fct isch' },
     ],
     layout: 'split' as const,
-    gradient: 'from-shake-neon-pink/30 to-shake-neon-purple/20',
-    accentColor: '#ff2d78',
-    bgStyle: 'linear-gradient(135deg, rgba(255,45,120,0.08), rgba(180,77,255,0.05))',
   },
   {
     id: 'first-time',
     name: 'Mis 1. Mal',
-    emoji: '\u{1F389}',
     icon: PartyPopper,
     description: 'Erinnersch du di an dis erschte Mal?',
-    slots: [{ label: 'Mis erschte Mal', hint: 'Foto oder Selfie', placeholder: '\u{1F31F}' }],
+    slots: [{ label: 'Mis erschte Mal', hint: 'Foto oder Selfie' }],
     layout: 'single' as const,
     prompts: ['Wenn isch es gsi?', 'Mit wem warsch du do?', 'Was hosch gf\u00fchlt?'],
-    gradient: 'from-shake-neon-green/20 to-shake-neon-blue/20',
-    accentColor: '#39ff14',
-    bgStyle: 'linear-gradient(135deg, rgba(57,255,20,0.06), rgba(0,212,255,0.04))',
   },
   {
     id: 'crew',
     name: 'D\' Crew',
-    emoji: '\u{1F46F}',
     icon: Users,
     description: 'Zeig dini Shake-Gang!',
     slots: [
-      { label: 'D\' Crew', hint: 'Gruppefoto vo domols', placeholder: '\u{1F91C}' },
-      { label: 'Und h\u00fct?', hint: 'Gruppefoto vo h\u00fct', placeholder: '\u{1F91B}' },
+      { label: 'D\' Crew', hint: 'Gruppefoto vo domols' },
+      { label: 'Und h\u00fct?', hint: 'Gruppefoto vo h\u00fct' },
     ],
     layout: 'split' as const,
-    gradient: 'from-shake-neon-blue/20 to-shake-neon-purple/20',
-    accentColor: '#00d4ff',
-    bgStyle: 'linear-gradient(135deg, rgba(0,212,255,0.06), rgba(180,77,255,0.04))',
   },
   {
     id: 'best-night',
     name: 'Die beschti Nacht',
-    emoji: '\u{1F319}',
     icon: Moon,
     description: 'Die eini Nacht wo du nie vergissch',
-    slots: [{ label: 'Foto', hint: 'Falls du eis hosch...', placeholder: '\u{1FA69}' }],
+    slots: [{ label: 'Foto', hint: 'Falls du eis hosch...' }],
     layout: 'single' as const,
     prompts: ['Was isch passiert?', 'Weles Johr?', 'Wel\u00e4 Song isch glofa?'],
-    gradient: 'from-shake-neon-purple/30 to-shake-black',
-    accentColor: '#b44dff',
-    bgStyle: 'linear-gradient(135deg, rgba(180,77,255,0.1), rgba(10,10,10,0.95))',
   },
   {
     id: 'sunrise',
     name: 'Sunrise Session',
-    emoji: '\u{1F305}',
     icon: Sunrise,
     description: 'Die legend\u00e4ra Morga noch de Nacht',
-    slots: [{ label: 'Sunrise', hint: 'De Morga drnoch', placeholder: '\u{2600}\u{FE0F}' }],
+    slots: [{ label: 'Sunrise', hint: 'De Morga drnoch' }],
     layout: 'single' as const,
     prompts: ['Wie isch de Heimweg gsi?'],
-    gradient: 'from-shake-warm/30 to-shake-gold/20',
-    accentColor: '#ff8c42',
-    bgStyle: 'linear-gradient(180deg, #1a0c00 0%, #2d1200 30%, rgba(255,107,53,0.15) 70%, rgba(255,215,0,0.1) 100%)',
   },
   {
     id: 'confession',
     name: 'Beichte',
-    emoji: '\u{1F92B}',
     icon: Lock,
     description: 'Was du no nie \u00f6pperem verzellt hosch...',
     slots: [],
     layout: 'text-only' as const,
     prompts: ['Was isch im Shake passiert, wo ni\u00e4med weiss?'],
-    gradient: 'from-shake-neon-pink/20 to-shake-dark',
-    accentColor: '#ff2d78',
-    bgStyle: 'linear-gradient(180deg, #0a0a0a 0%, #1a0010 50%, #0d0008 100%)',
   },
   {
     id: 'playlist',
     name: 'Mi Shake-Song',
-    emoji: '\u{1F3B5}',
     icon: Music,
     description: 'De Song wo di immer ans Shake erinnert',
     slots: [],
     layout: 'song' as const,
     prompts: ['Warum genau d\u00e4 Song?'],
-    gradient: 'from-shake-neon-blue/20 to-shake-dark',
-    accentColor: '#00d4ff',
-    bgStyle: 'linear-gradient(135deg, rgba(0,212,255,0.08), rgba(10,10,10,0.95))',
   },
 ]
 
@@ -157,218 +125,116 @@ export function SpecialTemplates({ onComplete, onSelectionChange, onBack }: Spec
 
   const hasContent = images.some(Boolean) || Object.values(answers).some((v) => v.trim()) || selectedSong
 
-  // === Template chooser — graphic story covers ===
+  // === Template chooser — unified dark surface, pink accent ===
   if (!selected) {
     return (
       <div className="space-y-3">
-        {/* 2x2 grid for first 4, then remaining as list */}
         <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.slice(0, 4).map((tmpl, i) => (
-            <motion.button
-              key={tmpl.id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => {
-                setSelected(tmpl.id)
-                setImages(new Array(tmpl.slots.length).fill(null))
-                setFiles(new Array(tmpl.slots.length).fill(null))
-                onSelectionChange?.(true)
-              }}
-              className="relative overflow-hidden rounded-2xl"
-              style={{ height: '160px' }}
-            >
-              <div className="absolute inset-0" style={{ background: tmpl.bgStyle }} />
-              <div
-                className="absolute inset-0"
-                style={{ background: `radial-gradient(circle at 70% 30%, ${tmpl.accentColor}25, transparent 60%)` }}
-              />
-              <div className="relative flex h-full flex-col justify-between p-3.5">
-                <div className="text-[9px] uppercase tracking-[0.15em]" style={{ color: `${tmpl.accentColor}80` }}>
-                  {tmpl.layout === 'split' ? 'Vergleich' : tmpl.layout === 'song' ? 'Musik' : 'Erinnerung'}
+          {TEMPLATES.map((tmpl, i) => {
+            const Icon = tmpl.icon
+            return (
+              <motion.button
+                key={tmpl.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => {
+                  setSelected(tmpl.id)
+                  setImages(new Array(tmpl.slots.length).fill(null))
+                  setFiles(new Array(tmpl.slots.length).fill(null))
+                  onSelectionChange?.(true)
+                }}
+                className="relative overflow-hidden rounded-2xl bg-shake-surface"
+                style={{ height: '130px' }}
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(255,45,120,0.06),transparent_60%)]" />
+                <div className="relative flex h-full flex-col justify-between p-4">
+                  <Icon className="h-5 w-5 text-shake-neon-pink/60" />
+                  <div>
+                    <div className="text-sm font-bold text-shake-text leading-tight">{tmpl.name}</div>
+                    <div className="mt-0.5 text-xs text-shake-text-muted leading-snug">{tmpl.description}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-4xl mb-1.5">{tmpl.emoji}</div>
-                  <div className="text-sm font-bold text-white leading-tight">{tmpl.name}</div>
-                  <div className="mt-0.5 text-[10px] text-white/40 leading-snug">{tmpl.description}</div>
-                </div>
-              </div>
-            </motion.button>
-          ))}
-        </div>
-
-        {/* Remaining templates as wider cards */}
-        <div className="grid grid-cols-2 gap-3">
-          {TEMPLATES.slice(4).map((tmpl, i) => (
-            <motion.button
-              key={tmpl.id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: (i + 4) * 0.05 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => {
-                setSelected(tmpl.id)
-                setImages(new Array(tmpl.slots.length).fill(null))
-                setFiles(new Array(tmpl.slots.length).fill(null))
-                onSelectionChange?.(true)
-              }}
-              className="relative overflow-hidden rounded-2xl"
-              style={{ height: '120px' }}
-            >
-              <div className="absolute inset-0" style={{ background: tmpl.bgStyle }} />
-              <div
-                className="absolute inset-0"
-                style={{ background: `radial-gradient(circle at 80% 20%, ${tmpl.accentColor}20, transparent 60%)` }}
-              />
-              <div className="relative flex h-full flex-col justify-between p-3.5">
-                <div className="text-3xl">{tmpl.emoji}</div>
-                <div>
-                  <div className="text-sm font-bold text-white">{tmpl.name}</div>
-                  <div className="text-[10px] text-white/35">{tmpl.description}</div>
-                </div>
-              </div>
-            </motion.button>
-          ))}
+              </motion.button>
+            )
+          })}
         </div>
       </div>
     )
   }
 
   // === Selected template inner page ===
-  const isConfession = template?.id === 'confession'
-  const isSunrise = template?.id === 'sunrise'
+  const Icon = template?.icon || Star
 
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="relative -mx-4 px-4 space-y-4 pb-4"
-      style={{
-        background: template?.bgStyle,
-        minHeight: '60vh',
-      }}
+      className="space-y-4 pb-4"
     >
-      {/* Full atmospheric gradient overlay */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `radial-gradient(circle at 50% 0%, ${template?.accentColor}12, transparent 60%)`,
-        }}
-      />
-
-      {/* Content layer above gradient */}
-      <div className="relative">
-      {/* Header with back - styled with accent */}
+      {/* Header with back */}
       <button
         onClick={() => { setSelected(null); setImages([]); setFiles([]); setAnswers({}); setSelectedSong(null); onSelectionChange?.(false) }}
-        className="flex items-center gap-2 pt-2"
+        className="flex items-center gap-3 active:opacity-70 transition-opacity"
       >
-        <div
-          className="flex h-8 w-8 items-center justify-center rounded-full"
-          style={{
-            background: `${template?.accentColor}15`,
-            border: `1px solid ${template?.accentColor}30`,
-          }}
-        >
-          <ChevronLeft className="h-4 w-4" style={{ color: template?.accentColor }} />
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 border border-white/10">
+          <ChevronLeft className="h-4 w-4 text-shake-text" />
         </div>
-        <span className="text-3xl">{template?.emoji}</span>
         <div>
-          <div className="text-sm font-bold" style={{ color: template?.accentColor }}>{template?.name}</div>
-          <div className="text-[10px] text-shake-text-muted">{template?.description}</div>
+          <div className="text-sm font-bold text-shake-text">{template?.name}</div>
+          <div className="text-xs text-shake-text-muted">{template?.description}</div>
         </div>
       </button>
 
-      {/* Confession template - dark secretive vibe */}
-      {isConfession && (
-        <div className="rounded-2xl border border-shake-neon-pink/10 bg-gradient-to-b from-black via-[#0d0008] to-black p-5">
-          <div className="mb-4 flex items-center justify-center gap-2">
-            <Lock className="h-4 w-4 text-shake-neon-pink/50" />
-            <span className="text-xs uppercase tracking-widest text-shake-neon-pink/40">Vertraulich</span>
-            <Lock className="h-4 w-4 text-shake-neon-pink/50" />
-          </div>
+      {/* Confession template */}
+      {template?.id === 'confession' && (
+        <div className="rounded-2xl border border-shake-neon-pink/10 bg-shake-surface p-5 text-center">
+          <Lock className="mx-auto h-5 w-5 text-shake-neon-pink/40 mb-2" />
+          <span className="text-xs uppercase tracking-widest text-shake-neon-pink/40">Vertraulich</span>
         </div>
       )}
 
-      {/* Sunrise template - warm dawn gradient header */}
-      {isSunrise && (
-        <div
-          className="rounded-2xl p-4 text-center"
-          style={{
-            background: 'linear-gradient(180deg, #1a0800 0%, #3d1200 30%, rgba(255,107,53,0.3) 70%, rgba(255,215,0,0.15) 100%)',
-            border: '1px solid rgba(255,140,66,0.15)',
-          }}
-        >
-          <div className="text-3xl mb-1">{'\u{1F305}'}</div>
-          <span className="text-xs text-shake-warm/60">Die Sonne geht auf...</span>
-        </div>
-      )}
-
-      {/* Split layout (Damals vs. Heute etc.) with divider */}
+      {/* Split layout (Damals vs. Heute) */}
       {template?.layout === 'split' && (
-        <div className="relative flex gap-2">
+        <div className="relative flex gap-3">
           {template.slots.map((slot, i) => (
             <div key={i} className="flex-1">
-              <div
-                className="mb-1.5 text-center text-xs font-bold uppercase tracking-wider"
-                style={{ color: template.accentColor }}
-              >
+              <div className="mb-2 text-center text-xs font-bold uppercase tracking-wider text-shake-neon-pink/60">
                 {slot.label}
               </div>
               {images[i] ? (
-                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl" style={{ border: `1px solid ${template.accentColor}25` }}>
+                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
                   <img src={images[i]!} alt="" className="h-full w-full object-cover" />
                   <button
                     onClick={() => {
                       setImages(prev => { const n = [...prev]; n[i] = null; return n })
                       setFiles(prev => { const n = [...prev]; n[i] = null as unknown as File; return n })
                     }}
-                    className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 backdrop-blur-sm"
+                    className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 backdrop-blur-sm active:scale-90"
                   >
                     <X className="h-4 w-4 text-white" />
                   </button>
                 </div>
               ) : (
-                <label className="relative flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl transition-colors active:bg-white/10">
-                  {/* Atmospheric glow behind empty slot */}
-                  <div
-                    className="absolute inset-0 rounded-2xl opacity-30 blur-lg"
-                    style={{ background: `radial-gradient(circle at center, ${template.accentColor}20, transparent 70%)` }}
+                <label className="flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] active:bg-white/5 transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture={i === 1 ? 'user' : undefined}
+                    onChange={(e) => handleImageUpload(e, i)}
+                    className="hidden"
                   />
-                  <div
-                    className="relative flex aspect-[3/4] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl"
-                    style={{
-                      border: `1px dashed ${template.accentColor}30`,
-                      background: `${template.accentColor}05`,
-                    }}
-                  >
-                    <input
-                      type="file"
-                      accept="image/*"
-                      capture={i === 1 ? 'user' : undefined}
-                      onChange={(e) => handleImageUpload(e, i)}
-                      className="hidden"
-                    />
-                    <span className="text-4xl opacity-30">{slot.placeholder}</span>
-                    <span className="text-[11px]" style={{ color: `${template.accentColor}60` }}>{slot.hint}</span>
-                  </div>
+                  <ImagePlus className="h-6 w-6 text-shake-text-muted/30" />
+                  <span className="text-xs text-shake-text-muted/40">{slot.hint}</span>
                 </label>
               )}
             </div>
           ))}
 
-          {/* VS divider badge */}
+          {/* VS divider */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-xs font-black"
-              style={{
-                borderColor: template.accentColor,
-                backgroundColor: 'rgba(10,10,10,0.9)',
-                color: template.accentColor,
-                boxShadow: `0 0 12px ${template.accentColor}40`,
-              }}
-            >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-shake-neon-pink/30 bg-shake-black text-xs font-black text-shake-neon-pink">
               VS
             </div>
           </div>
@@ -379,96 +245,63 @@ export function SpecialTemplates({ onComplete, onSelectionChange, onBack }: Spec
       {template?.layout === 'single' && template.slots.length > 0 && (
         <div>
           {images[0] ? (
-            <div className="relative mx-auto aspect-square max-w-xs overflow-hidden rounded-2xl" style={{ border: `1px solid ${template.accentColor}25` }}>
+            <div className="relative mx-auto aspect-square max-w-xs overflow-hidden rounded-2xl border border-white/10">
               <img src={images[0]} alt="" className="h-full w-full object-cover" />
               <button
                 onClick={() => { setImages([null]); setFiles([null as unknown as File]) }}
-                className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 backdrop-blur-sm"
+                className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 backdrop-blur-sm active:scale-90"
               >
                 <X className="h-4 w-4 text-white" />
               </button>
             </div>
           ) : (
-            <div className="relative mx-auto max-w-xs">
-              {/* Atmospheric glow */}
-              <div
-                className="absolute inset-0 rounded-2xl opacity-30 blur-xl"
-                style={{ background: `radial-gradient(circle at center, ${template.accentColor}20, transparent 70%)` }}
-              />
-              <label
-                className="relative flex aspect-square cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl transition-colors active:bg-white/10"
-                style={{
-                  border: `1px dashed ${template.accentColor}30`,
-                  background: `${template.accentColor}05`,
-                }}
-              >
-                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 0)} className="hidden" />
-                <span className="text-5xl opacity-25">{template.slots[0].placeholder}</span>
-                <span className="text-sm" style={{ color: `${template.accentColor}60` }}>{template.slots[0].hint}</span>
-              </label>
-            </div>
+            <label className="mx-auto flex aspect-square max-w-xs cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] active:bg-white/5 transition-colors">
+              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 0)} className="hidden" />
+              <ImagePlus className="h-8 w-8 text-shake-text-muted/30" />
+              <span className="text-sm text-shake-text-muted/40">{template.slots[0].hint}</span>
+            </label>
           )}
         </div>
       )}
 
-      {/* Song search for "Mein Shake-Song" */}
+      {/* Song search */}
       {template?.layout === 'song' && (
         <SongSearch selected={selectedSong} onSelect={setSelectedSong} />
       )}
 
-      {/* Prompts with template-specific accent colors - integrated design */}
+      {/* Prompts */}
       {template?.prompts && (
-        <div
-          className="space-y-3 rounded-2xl p-4"
-          style={{
-            background: `${template.accentColor}05`,
-            border: `1px solid ${template.accentColor}10`,
-          }}
-        >
-          <div className="text-[9px] uppercase tracking-[0.15em]" style={{ color: `${template.accentColor}50` }}>
-            Erzhl meh...
+        <div className="space-y-3 rounded-2xl bg-shake-surface p-4 border border-white/5">
+          <div className="text-xs uppercase tracking-widest text-shake-text-muted/40">
+            Erzähl meh...
           </div>
           {template.prompts.map((prompt) => (
             <div key={prompt}>
-              <label
-                className="mb-1 block text-xs font-medium"
-                style={{ color: template.accentColor }}
-              >
+              <label className="mb-1.5 block text-xs font-medium text-shake-text-muted">
                 {prompt}
               </label>
               <input
                 value={answers[prompt] || ''}
                 onChange={(e) => setAnswers(prev => ({ ...prev, [prompt]: e.target.value }))}
                 placeholder="..."
-                className="w-full rounded-xl px-4 py-2.5 text-sm text-shake-text placeholder:text-white/20 focus:outline-none transition-colors"
-                style={{
-                  background: `${template.accentColor}08`,
-                  border: `1px solid ${answers[prompt] ? `${template.accentColor}40` : `${template.accentColor}15`}`,
-                  boxShadow: answers[prompt] ? `0 0 15px ${template.accentColor}08` : undefined,
-                }}
+                className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-2.5 text-base text-shake-text placeholder:text-white/20 focus:border-shake-neon-pink/30 focus:outline-none transition-colors"
               />
             </div>
           ))}
         </div>
       )}
 
-      {/* Done button */}
+      {/* Done button — always pink */}
       {hasContent && (
         <motion.button
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={handleComplete}
-          className="flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-medium active:opacity-80"
-          style={{
-            backgroundColor: `${template?.accentColor}20`,
-            color: template?.accentColor,
-            boxShadow: `0 0 20px ${template?.accentColor}10`,
-          }}
+          className="w-full rounded-full bg-shake-neon-pink py-3 text-sm font-semibold text-white active:scale-[0.98] transition-transform"
         >
-          {'\u2713'} Fertig
+          Fertig
         </motion.button>
       )}
-      </div>
     </motion.div>
   )
 }

@@ -1,22 +1,27 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-shake-black: #0a0a0a;
-  --color-shake-dark: #111111;
-  --color-shake-gray: #1a1a1a;
-  --color-shake-light: #2a2a2a;
+  /* === COLORS: 2 accents only === */
+  --color-shake-black: #0a0a0f;
+  --color-shake-dark: #111116;
+  --color-shake-surface: #141418;
+  --color-shake-gray: #1a1a1f;
+  --color-shake-light: #2a2a2f;
   --color-shake-neon-pink: #ff2d78;
   --color-shake-neon-blue: #00d4ff;
+  /* Legacy — kept for compatibility, do NOT use in new UI */
   --color-shake-neon-purple: #b44dff;
   --color-shake-neon-green: #39ff14;
   --color-shake-gold: #ffd700;
   --color-shake-warm: #ff8c42;
+  /* Text */
   --color-shake-text: #f0f0f0;
-  --color-shake-text-muted: #666666;
+  --color-shake-text-muted: #8a8a8a;
 
-  --color-background: #0a0a0a;
+  --color-background: #0a0a0f;
   --color-foreground: #f0f0f0;
 
+  /* Fonts */
   --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
   --font-heading: var(--font-outfit), system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -33,23 +38,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-shake-dark);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-shake-neon-pink);
-  border-radius: 2px;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-shake-dark); }
+::-webkit-scrollbar-thumb { background: var(--color-shake-neon-pink); border-radius: 2px; }
 
 /* ===== NEON GLOW — single layer, restrained ===== */
 .neon-glow-pink {
   text-shadow: 0 0 10px rgba(255,45,120,0.5);
 }
 
-/* ===== GRADIENT TEXT — used sparingly on "Shake" ===== */
+/* ===== GRADIENT TEXT — brand logotype only ===== */
 .gradient-text {
   background: linear-gradient(135deg, var(--color-shake-neon-pink), var(--color-shake-neon-purple));
   -webkit-background-clip: text;
@@ -59,42 +57,45 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== PULSE NEON CTA — subtle ===== */
 @keyframes pulse-neon {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(255,45,120,0.25);
-  }
-  50% {
-    box-shadow: 0 0 16px rgba(255,45,120,0.4);
-  }
+  0%, 100% { box-shadow: 0 0 8px rgba(255,45,120,0.25); }
+  50% { box-shadow: 0 0 16px rgba(255,45,120,0.4); }
 }
-.pulse-neon {
-  animation: pulse-neon 3s ease-in-out infinite;
-}
+.pulse-neon { animation: pulse-neon 3s ease-in-out infinite; }
 
-/* ===== GLASS CARD — clean, minimal ===== */
+/* ===== GLASS CARD — visible on dark bg ===== */
 .glass-card {
-  background: rgba(17, 17, 17, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(20, 20, 24, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  transition: border-color 0.3s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.2s ease, transform 0.15s ease;
 }
-
-.glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+.glass-card:active {
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: scale(0.98);
 }
 
 /* ===== GLASS UTILITIES ===== */
 .glass {
-  background: rgba(20, 20, 20, 0.6);
+  background: rgba(20, 20, 24, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 .glass-strong {
-  background: rgba(20, 20, 20, 0.85);
+  background: rgba(20, 20, 24, 0.85);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ===== TOUCH INTERACTION ===== */
+.touch-bounce {
+  transition: transform 150ms ease;
+}
+.touch-bounce:active {
+  transform: scale(0.97);
 }
 
 /* ===== AVATAR GRADIENT RING ===== */
@@ -110,50 +111,29 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== ENTRANCE ANIMATION ===== */
 @keyframes slide-up-fade {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.animate-slide-up {
-  animation: slide-up-fade 0.6s ease-out forwards;
-}
+.animate-slide-up { animation: slide-up-fade 0.6s ease-out forwards; }
 
 /* ===== TEXT FLICKER — neon sign effect ===== */
 @keyframes text-flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
     text-shadow: 0 0 4px var(--color-shake-neon-pink), 0 0 11px var(--color-shake-neon-pink), 0 0 19px var(--color-shake-neon-pink);
   }
-  20%, 24%, 55% {
-    text-shadow: none;
-  }
+  20%, 24%, 55% { text-shadow: none; }
 }
-.text-flicker {
-  animation: text-flicker 4s linear infinite;
-}
+.text-flicker { animation: text-flicker 4s linear infinite; }
 
 /* ===== CIRCULAR PROGRESS ===== */
-.circular-progress {
-  transform: rotate(-90deg);
-}
+.circular-progress { transform: rotate(-90deg); }
 
 /* ===== PULSE RECORD BUTTON ===== */
 @keyframes pulse-record {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 0 16px rgba(239, 68, 68, 0);
-  }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
 }
-.pulse-record {
-  animation: pulse-record 1.5s ease-out infinite;
-}
+.pulse-record { animation: pulse-record 1.5s ease-out infinite; }
 
 /* ===== WAVEFORM BAR ANIMATION ===== */
 @keyframes waveform-bar {
@@ -163,15 +143,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== STAGGER FADE IN ===== */
 @keyframes stagger-in {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.animate-stagger-in {
-  animation: stagger-in 0.5s ease-out forwards;
-}
+.animate-stagger-in { animation: stagger-in 0.5s ease-out forwards; }

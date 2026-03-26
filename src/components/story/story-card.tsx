@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { MessageCircle, AtSign, Share2 } from 'lucide-react'
 import type { Story, ReactionType } from '@/types'
 import { REACTION_EMOJIS } from '@/types'
 import { formatDate, cn } from '@/lib/utils'
@@ -21,15 +20,13 @@ export function StoryCard({ story }: { story: Story }) {
   const reactionsCount = story.reactions_count || {}
 
   return (
-    <div className="glass-card overflow-hidden rounded-2xl">
+    <div className="glass-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 pb-2">
-        <div className="avatar-ring">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-shake-dark text-lg">
-            🪩
-          </div>
+      <div className="flex items-center gap-3 p-4 pb-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-shake-surface text-lg">
+          {story.author_name ? story.author_name.charAt(0).toUpperCase() : '?'}
         </div>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-medium text-shake-text">
               {story.author_name || 'Anonym'}
@@ -39,9 +36,9 @@ export function StoryCard({ story }: { story: Story }) {
                 href={`https://instagram.com/${story.instagram_handle}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-0.5 text-xs text-shake-neon-blue hover:underline"
+                className="truncate text-xs text-shake-neon-blue active:underline"
               >
-                <AtSign className="h-3 w-3" />@{story.instagram_handle}
+                @{story.instagram_handle}
               </a>
             )}
           </div>
@@ -85,7 +82,7 @@ export function StoryCard({ story }: { story: Story }) {
 
       {/* Content */}
       <div className="p-4">
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-shake-text">
+        <p className="whitespace-pre-wrap text-base leading-relaxed text-shake-text">
           {story.content_text}
         </p>
       </div>
@@ -96,7 +93,7 @@ export function StoryCard({ story }: { story: Story }) {
           {Object.entries(reactionsCount).map(([type, count]) => (
             <span
               key={type}
-              className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-0.5 text-xs backdrop-blur-sm"
+              className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-xs"
             >
               {REACTION_EMOJIS[type as ReactionType]} {String(count)}
             </span>
@@ -104,14 +101,14 @@ export function StoryCard({ story }: { story: Story }) {
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex items-center border-t border-white/[0.06] px-2">
+      {/* Actions — text-only, no icons */}
+      <div className="flex items-center border-t border-white/[0.06]">
         <div className="relative">
           <button
             onClick={() => setShowReactions(!showReactions)}
-            className="flex items-center gap-1.5 px-3 py-3 text-xs text-shake-text-muted active:text-shake-neon-pink"
+            className="px-4 py-3 text-sm text-shake-text-muted active:text-shake-neon-pink transition-colors"
           >
-            ❤️ Reagieren
+            Reagieren
           </button>
           {showReactions && (
             <motion.div
@@ -134,9 +131,9 @@ export function StoryCard({ story }: { story: Story }) {
 
         <Link
           href={`/create?reply=${story.id}`}
-          className="flex items-center gap-1.5 px-3 py-3 text-xs text-shake-text-muted active:text-shake-neon-blue"
+          className="px-4 py-3 text-sm text-shake-text-muted active:text-shake-neon-pink transition-colors"
         >
-          <MessageCircle className="h-4 w-4" /> Antworten
+          Antworten
         </Link>
 
         <button
@@ -149,9 +146,9 @@ export function StoryCard({ story }: { story: Story }) {
               })
             }
           }}
-          className="ml-auto flex items-center gap-1 px-3 py-3 text-xs text-shake-text-muted transition-colors hover:text-shake-gold"
+          className="ml-auto px-4 py-3 text-sm text-shake-text-muted active:text-shake-neon-pink transition-colors"
         >
-          <Share2 className="h-4 w-4" /> Teilen
+          Teilen
         </button>
       </div>
     </div>
