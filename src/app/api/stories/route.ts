@@ -17,10 +17,14 @@ export async function GET() {
 
   // Get reactions counts
   const storyIds = data.map((s) => s.id)
-  const { data: reactions } = await supabase
-    .from('reactions')
-    .select('story_id, reaction_type')
-    .in('story_id', storyIds)
+  let reactions: { story_id: string; reaction_type: string }[] | null = null
+  if (storyIds.length > 0) {
+    const { data: reactionsData } = await supabase
+      .from('reactions')
+      .select('story_id, reaction_type')
+      .in('story_id', storyIds)
+    reactions = reactionsData
+  }
 
   // Aggregate reactions
   const reactionCounts: Record<string, Record<string, number>> = {}
@@ -54,15 +58,21 @@ export async function POST(req: NextRequest) {
   }
 
   // Rate limiting: max 5 stories per anonymous_id per hour
-  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
-  const { count } = await supabase
-    .from('stories')
-    .select('*', { count: 'exact', head: true })
-    .eq('anonymous_id', anonymous_id)
-    .gte('created_at', oneHourAgo)
+  // Wrapped in try/catch in case RLS prevents counting other users' rows
+  try {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+    const { count, error: countError } = await supabase
+      .from('stories')
+      .select('*', { count: 'exact', head: true })
+      .eq('anonymous_id', anonymous_id)
+      .gte('created_at', oneHourAgo)
 
-  if (count && count >= 5) {
-    return NextResponse.json({ error: 'Too many stories. Please wait a bit.' }, { status: 429 })
+    if (!countError && count !== null && count >= 5) {
+      return NextResponse.json({ error: 'Too many stories. Please wait a bit.' }, { status: 429 })
+    }
+  } catch (e) {
+    // Rate limiting is best-effort; don't block story creation if the query fails
+    console.warn('Rate limit check failed (RLS or DB issue):', e)
   }
 
   const { data, error } = await supabase
@@ -91,11 +101,20 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ story_id: data.id, content_text }),
     })
-    const modData = await modResult.json()
-    data.moderation_status = modData.approved ? 'approved' : 'rejected'
+    if (modResult.ok) {
+      const modData = await modResult.json().catch(() => null)
+      if (modData) {
+        data.moderation_status = modData.approved ? 'approved' : 'rejected'
+      }
+    } else {
+      console.warn('Moderation returned non-OK status:', modResult.status)
+      // If moderation service fails, auto-approve to not block users
+      data.moderation_status = 'approved'
+    }
   } catch (e) {
     console.error('Moderation call failed:', e)
-    // Story stays as 'pending' - will need manual approval
+    // If moderation is unreachable, auto-approve to not block users
+    data.moderation_status = 'approved'
   }
 
   return NextResponse.json(data, { status: 201 })

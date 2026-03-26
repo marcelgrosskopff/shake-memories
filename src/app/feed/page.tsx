@@ -6,7 +6,7 @@ import { StoryCard } from '@/components/story/story-card'
 import { Loader2, Sparkles } from 'lucide-react'
 
 export default function FeedPage() {
-  const { data: stories, isLoading } = useStories()
+  const { data: stories, isLoading, error } = useStories()
 
   return (
     <div className="min-h-dvh px-4 pt-6">
@@ -19,6 +19,24 @@ export default function FeedPage() {
         <div className="flex min-h-[50dvh] items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-shake-neon-pink" />
         </div>
+      ) : error ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex min-h-[50dvh] flex-col items-center justify-center text-center"
+        >
+          <div className="text-5xl">😵</div>
+          <h2 className="mt-4 text-lg font-medium">Oops, da ging was schief</h2>
+          <p className="mt-1 text-sm text-shake-text-muted">
+            Stories konnten nicht geladen werden. Versuch es nochmal!
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 rounded-full bg-shake-neon-pink px-6 py-2 text-sm font-medium text-white"
+          >
+            Nochmal versuchen
+          </button>
+        </motion.div>
       ) : !stories || stories.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}

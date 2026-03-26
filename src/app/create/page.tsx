@@ -38,6 +38,7 @@ export default function CreatePage() {
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null)
   const [recordedType, setRecordedType] = useState<'audio' | 'video' | null>(null)
   const [templateData, setTemplateData] = useState<{ type: string; images: string[]; files: File[] } | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const createStory = useCreateStory()
 
   const handleEditorStateChange = useCallback((state: EditorState) => {
@@ -61,6 +62,7 @@ export default function CreatePage() {
   const handleSubmit = async () => {
     if (!text.trim() && !recordedBlob && !templateData && (!editorState || editorState.textOverlays.length === 0)) return
     setStep('submitting')
+    setSubmitError(null)
 
     try {
       await createStory.mutateAsync({
@@ -70,7 +72,9 @@ export default function CreatePage() {
         media_files: mediaFiles.length > 0 ? mediaFiles : undefined,
       })
       setStep('done')
-    } catch {
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Etwas ist schiefgelaufen'
+      setSubmitError(message)
       setStep('details')
     }
   }
@@ -296,15 +300,31 @@ export default function CreatePage() {
               </div>
             </div>
 
+            {submitError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300"
+              >
+                <p className="font-medium">Fehler beim Einreichen</p>
+                <p className="mt-0.5 text-xs text-red-400">{submitError}</p>
+              </motion.div>
+            )}
+
             <button
               onClick={handleSubmit}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-shake-neon-pink to-shake-neon-purple px-6 py-3.5 text-lg font-semibold text-white transition-all hover:opacity-90"
+              disabled={createStory.isPending}
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-shake-neon-pink to-shake-neon-purple px-6 py-3.5 text-lg font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
             >
-              <Send className="h-5 w-5" />
+              {createStory.isPending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
               Absenden
             </button>
             <p className="text-center text-xs text-shake-text-muted">
-              Deine Story wird vor der Veröffentlichung geprüft. Good vibes only! ✨
+              Deine Story wird vor der Veröffentlichung geprüft. Good vibes only!
             </p>
           </motion.div>
         )}

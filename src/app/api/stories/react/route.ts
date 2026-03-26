@@ -10,16 +10,22 @@ export async function POST(req: NextRequest) {
   }
 
   // Toggle reaction: if it exists, delete it; otherwise, insert it
-  const { data: existing } = await supabase
+  const { data: existingRows } = await supabase
     .from('reactions')
     .select('id')
     .eq('story_id', story_id)
     .eq('reaction_type', reaction_type)
     .eq('anonymous_id', anonymous_id)
-    .single()
+    .limit(1)
 
-  if (existing) {
-    await supabase.from('reactions').delete().eq('id', existing.id)
+  if (existingRows && existingRows.length > 0) {
+    const { error: deleteError } = await supabase
+      .from('reactions')
+      .delete()
+      .eq('id', existingRows[0].id)
+    if (deleteError) {
+      return NextResponse.json({ error: deleteError.message }, { status: 500 })
+    }
     return NextResponse.json({ action: 'removed' })
   }
 
