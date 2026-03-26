@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Camera, ImagePlus, X, ChevronLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { SongSearch, type SpotifyTrack } from './song-search'
 
 interface SpecialTemplatesProps {
-  onComplete: (data: { type: string; images: string[]; files: File[] }) => void
+  onComplete: (data: { type: string; images: string[]; files: File[]; song?: SpotifyTrack }) => void
 }
 
 const TEMPLATES = [
@@ -92,8 +93,8 @@ const TEMPLATES = [
     emoji: '🎵',
     description: 'De Song wo di immer ans Shake erinnert',
     slots: [],
-    layout: 'text-only' as const,
-    prompts: ['Welä Song?', 'Warum genau dä Song?'],
+    layout: 'song' as const,
+    prompts: ['Warum genau dä Song?'],
     gradient: 'from-shake-neon-blue/20 to-shake-dark',
   },
 ]
@@ -103,6 +104,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
   const [images, setImages] = useState<(string | null)[]>([])
   const [files, setFiles] = useState<File[]>([])
   const [answers, setAnswers] = useState<Record<string, string>>({})
+  const [selectedSong, setSelectedSong] = useState<SpotifyTrack | null>(null)
 
   const template = TEMPLATES.find((t) => t.id === selected)
 
@@ -123,10 +125,11 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
       type: template.name,
       images: images.filter(Boolean) as string[],
       files: files.filter(Boolean),
+      ...(selectedSong && { song: selectedSong }),
     })
   }
 
-  const hasContent = images.some(Boolean) || Object.values(answers).some((v) => v.trim())
+  const hasContent = images.some(Boolean) || Object.values(answers).some((v) => v.trim()) || selectedSong
 
   // === Template chooser ===
   if (!selected) {
@@ -239,6 +242,11 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
             </label>
           )}
         </div>
+      )}
+
+      {/* Song search for "Mein Shake-Song" */}
+      {template?.layout === 'song' && (
+        <SongSearch selected={selectedSong} onSelect={setSelectedSong} />
       )}
 
       {/* Prompts */}
