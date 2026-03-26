@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Send,
@@ -27,6 +27,16 @@ const MAX_CHARS = 2000
 type CreationMode = 'choose' | 'visual' | 'text' | 'voice' | 'video' | 'template'
 type Step = 'create' | 'details' | 'submitting' | 'done'
 
+const MOODS = [
+  { emoji: '\u{1F973}', label: 'Party', color: 'shake-neon-pink' },
+  { emoji: '\u{1F972}', label: 'Emotional', color: 'shake-neon-blue' },
+  { emoji: '\u{1F602}', label: 'Lustig', color: 'shake-neon-green' },
+  { emoji: '\u{2764}\u{FE0F}', label: 'Liebe', color: 'shake-neon-purple' },
+  { emoji: '\u{1F92B}', label: 'Geheim', color: 'shake-warm' },
+]
+
+const AVATARS = ['\u{1F57A}', '\u{1F483}', '\u{1F3B8}', '\u{1F3A4}', '\u{1F37A}', '\u{1F942}', '\u{1FA69}', '\u{1F60E}']
+
 export default function CreatePage() {
   const [mode, setMode] = useState<CreationMode>('choose')
   const [step, setStep] = useState<Step>('create')
@@ -39,6 +49,8 @@ export default function CreatePage() {
   const [recordedType, setRecordedType] = useState<'audio' | 'video' | null>(null)
   const [templateData, setTemplateData] = useState<{ type: string; images: string[]; files: File[] } | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [selectedMood, setSelectedMood] = useState<number | null>(null)
+  const [selectedAvatar, setSelectedAvatar] = useState<number>(0)
   const createStory = useCreateStory()
 
   const handleEditorStateChange = useCallback((state: EditorState) => {
@@ -85,6 +97,10 @@ export default function CreatePage() {
     recordedBlob ||
     templateData
 
+  const moodColor = selectedMood !== null ? MOODS[selectedMood].color : 'shake-neon-pink'
+  const charProgress = text.length / MAX_CHARS
+  const circumference = 2 * Math.PI * 18
+
   // --- Mode chooser ---
   if (mode === 'choose' && step === 'create') {
     return (
@@ -101,7 +117,7 @@ export default function CreatePage() {
             Wie wottsch dini Shake-Erinnerung teila?
           </p>
 
-          {/* === SPEZIAL-TEMPLATES — prominent at top === */}
+          {/* === SPEZIAL-TEMPLATES === */}
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={() => setMode('template')}
@@ -109,25 +125,25 @@ export default function CreatePage() {
           >
             <div className="flex items-center gap-4">
               <div className="flex gap-1 text-3xl">
-                <span>📸</span>
+                <span>{'\u{1F4F8}'}</span>
               </div>
               <div className="flex-1 text-left">
                 <div className="font-bold text-shake-text">Spezial-Templates</div>
                 <div className="text-xs text-shake-text-muted">
-                  Damals vs. Hüt &bull; Love Story &bull; Beichte &bull; und meh
+                  Damals vs. H&uuml;t &bull; Love Story &bull; Beichte &bull; und meh
                 </div>
               </div>
-              <div className="text-shake-text-muted">›</div>
+              <div className="text-shake-text-muted">&rsaquo;</div>
             </div>
           </motion.button>
 
-          {/* === OTHER MODES — 2x2 grid === */}
+          {/* === OTHER MODES === */}
           <div className="grid grid-cols-2 gap-3">
             {[
-              { mode: 'visual' as const, icon: Brush, title: 'Visual', desc: 'Filter & Sticker', color: 'from-shake-neon-pink to-shake-neon-purple', emoji: '🎨' },
-              { mode: 'text' as const, icon: Type, title: 'Text', desc: 'Gschicht schrieba', color: 'from-shake-neon-blue to-shake-neon-purple', emoji: '✍️' },
-              { mode: 'voice' as const, icon: Mic, title: 'Audio', desc: 'Sprachnachricht', color: 'from-shake-neon-green to-shake-neon-blue', emoji: '🎙️' },
-              { mode: 'video' as const, icon: Video, title: 'Video', desc: 'Aufnehmen / hochladen', color: 'from-shake-warm to-shake-neon-pink', emoji: '🎬' },
+              { mode: 'visual' as const, icon: Brush, title: 'Visual', desc: 'Filter & Sticker', color: 'from-shake-neon-pink to-shake-neon-purple', emoji: '\u{1F3A8}' },
+              { mode: 'text' as const, icon: Type, title: 'Text', desc: 'Gschicht schrieba', color: 'from-shake-neon-blue to-shake-neon-purple', emoji: '\u{270D}\u{FE0F}' },
+              { mode: 'voice' as const, icon: Mic, title: 'Audio', desc: 'Sprachnachricht', color: 'from-shake-neon-green to-shake-neon-blue', emoji: '\u{1F399}\u{FE0F}' },
+              { mode: 'video' as const, icon: Video, title: 'Video', desc: 'Aufnehmen / hochladen', color: 'from-shake-warm to-shake-neon-pink', emoji: '\u{1F3AC}' },
             ].map((item) => (
               <motion.button
                 key={item.mode}
@@ -152,7 +168,7 @@ export default function CreatePage() {
 
   return (
     <div className="min-h-dvh bg-shake-black px-4 pt-6 pb-24">
-      {/* Header - mobile native style */}
+      {/* Header */}
       <div className="mb-4 flex items-center gap-3">
         <button
           onClick={() => {
@@ -192,31 +208,111 @@ export default function CreatePage() {
                 <textarea
                   value={text}
                   onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
-                  placeholder="Erzähl die Geschichte hinter deinem Bild... (optional)"
+                  placeholder="Erz&auml;hl die Geschichte hinter deinem Bild... (optional)"
                   className="h-24 w-full resize-none rounded-xl border border-shake-light/30 bg-shake-dark p-3 text-sm text-shake-text placeholder:text-shake-text-muted/50 focus:border-shake-neon-pink/50 focus:outline-none"
                 />
               </div>
             )}
 
-            {/* Text mode */}
+            {/* Text mode - REDESIGNED journal/diary feel */}
             {mode === 'text' && (
-              <div className="space-y-4">
-                <p className="text-sm text-shake-text-muted">
-                  Erzähl uns von deiner Lieblingserinnerung im Shake. Was macht diesen Ort für dich besonders?
-                </p>
-                <textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
-                  placeholder="Es war diese eine Nacht im K-Shake..."
-                  className="h-64 w-full resize-none rounded-2xl border border-shake-light/30 bg-shake-dark p-4 text-shake-text placeholder:text-shake-text-muted/50 focus:border-shake-neon-pink/50 focus:outline-none focus:ring-1 focus:ring-shake-neon-pink/30"
-                  autoFocus
-                />
-                <div className="flex items-center justify-between">
-                  <span className={cn('text-xs', text.length > MAX_CHARS * 0.9 ? 'text-shake-warm' : 'text-shake-text-muted')}>
-                    {text.length}/{MAX_CHARS}
-                  </span>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-5"
+              >
+                {/* Mood selector */}
+                <div>
+                  <p className="mb-2.5 text-xs font-medium uppercase tracking-wider text-shake-text-muted/60">Stimmung</p>
+                  <div className="flex gap-2">
+                    {MOODS.map((mood, i) => (
+                      <motion.button
+                        key={mood.label}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setSelectedMood(selectedMood === i ? null : i)}
+                        className={cn(
+                          'flex flex-1 flex-col items-center gap-1 rounded-xl py-2.5 transition-all',
+                          selectedMood === i
+                            ? `bg-${mood.color}/20 border border-${mood.color}/40`
+                            : 'border border-white/5 bg-white/5'
+                        )}
+                        style={selectedMood === i ? {
+                          borderColor: `var(--color-${mood.color})`,
+                          backgroundColor: `color-mix(in srgb, var(--color-${mood.color}) 15%, transparent)`,
+                        } : undefined}
+                      >
+                        <span className="text-xl">{mood.emoji}</span>
+                        <span className={cn(
+                          'text-[9px] font-medium',
+                          selectedMood === i ? 'text-shake-text' : 'text-shake-text-muted/60'
+                        )}>
+                          {mood.label}
+                        </span>
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+
+                {/* Journal textarea area */}
+                <div className="relative">
+                  {/* Paper texture background */}
+                  <div
+                    className="absolute inset-0 rounded-2xl opacity-[0.03]"
+                    style={{
+                      backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(255,255,255,0.1) 31px, rgba(255,255,255,0.1) 32px)',
+                    }}
+                  />
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
+                    placeholder="Es war diese eine Nacht im Shake..."
+                    className={cn(
+                      'relative h-80 w-full resize-none rounded-2xl border-2 bg-shake-dark/80 p-5 pt-6 text-lg leading-8 text-shake-text placeholder:text-shake-text-muted/30 focus:outline-none transition-colors',
+                      selectedMood !== null
+                        ? 'focus:ring-1'
+                        : 'border-white/10 focus:border-shake-neon-pink/40'
+                    )}
+                    style={selectedMood !== null ? {
+                      borderColor: `color-mix(in srgb, var(--color-${moodColor}) 30%, transparent)`,
+                    } : undefined}
+                    autoFocus
+                  />
+
+                  {/* Circular progress indicator */}
+                  <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                    <svg className="circular-progress h-10 w-10" viewBox="0 0 40 40">
+                      <circle
+                        cx="20" cy="20" r="18"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.06)"
+                        strokeWidth="2.5"
+                      />
+                      <circle
+                        cx="20" cy="20" r="18"
+                        fill="none"
+                        stroke={charProgress > 0.9 ? '#ff8c42' : charProgress > 0 ? 'var(--color-shake-neon-pink)' : 'transparent'}
+                        strokeWidth="2.5"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={circumference * (1 - charProgress)}
+                        strokeLinecap="round"
+                        className="transition-all duration-300"
+                      />
+                    </svg>
+                    {text.length > MAX_CHARS * 0.8 && (
+                      <span className={cn(
+                        'text-[10px] font-mono',
+                        text.length > MAX_CHARS * 0.9 ? 'text-shake-warm' : 'text-shake-text-muted/50'
+                      )}>
+                        {MAX_CHARS - text.length}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <p className="text-center text-[11px] text-shake-text-muted/40 italic">
+                  Was macht d&auml;s Shake f&uuml;r dich besonders?
+                </p>
+              </motion.div>
             )}
 
             {/* Voice mode */}
@@ -242,7 +338,7 @@ export default function CreatePage() {
                 <textarea
                   value={text}
                   onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
-                  placeholder="Erzähl die Geschichte dazu... (optional)"
+                  placeholder="Erz&auml;hl die Geschichte dazu... (optional)"
                   className="h-24 w-full resize-none rounded-xl border border-shake-light/30 bg-shake-dark p-3 text-sm text-shake-text placeholder:text-shake-text-muted/50 focus:border-shake-neon-pink/50 focus:outline-none"
                 />
               </div>
@@ -259,22 +355,41 @@ export default function CreatePage() {
           </motion.div>
         )}
 
-        {/* Details step */}
+        {/* Details step - REDESIGNED with avatar picker + preview */}
         {step === 'details' && (
           <motion.div
             key="details"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="mx-auto max-w-lg space-y-4"
+            className="mx-auto max-w-lg space-y-5"
           >
-            <p className="text-sm text-shake-text-muted">
-              Fast fertig! Noch ein paar optionale Details.
-            </p>
+            {/* Avatar picker */}
+            <div>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-shake-text-muted/60">Dein Avatar</p>
+              <div className="flex gap-2 justify-center">
+                {AVATARS.map((av, i) => (
+                  <motion.button
+                    key={av}
+                    whileTap={{ scale: 0.85 }}
+                    onClick={() => setSelectedAvatar(i)}
+                    className={cn(
+                      'flex h-11 w-11 items-center justify-center rounded-full text-xl transition-all',
+                      selectedAvatar === i
+                        ? 'bg-shake-neon-pink/20 ring-2 ring-shake-neon-pink scale-110'
+                        : 'bg-white/5 hover:bg-white/10'
+                    )}
+                  >
+                    {av}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
 
+            {/* Name + Instagram */}
             <div>
               <label className="mb-1 block text-sm text-shake-text-muted">
-                Dein Name (optional - bleib gern anonym)
+                Dein Name (optional &ndash; bleib gern anonym)
               </label>
               <input
                 value={authorName}
@@ -297,6 +412,30 @@ export default function CreatePage() {
                   placeholder="dein_handle"
                   className="w-full bg-transparent px-2 py-3 text-shake-text placeholder:text-shake-text-muted/50 focus:outline-none"
                 />
+              </div>
+            </div>
+
+            {/* Preview card */}
+            <div>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-shake-text-muted/60">Vorschau</p>
+              <div className="glass-card rounded-2xl p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-shake-neon-pink to-shake-neon-purple text-lg">
+                    {AVATARS[selectedAvatar]}
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-shake-text">
+                      {authorName.trim() || 'Anonym'}
+                    </div>
+                    {instagramHandle.trim() && (
+                      <div className="text-xs text-shake-text-muted">@{instagramHandle}</div>
+                    )}
+                  </div>
+                  <div className="ml-auto text-[10px] text-shake-text-muted/50">gerade eben</div>
+                </div>
+                <p className="text-sm text-shake-text/80 line-clamp-3">
+                  {text.trim() || (templateData ? `[${templateData.type}]` : mode === 'visual' ? '[Visual Story]' : recordedBlob ? (recordedType === 'audio' ? '[Sprachnachricht]' : '[Video]') : '...')}
+                </p>
               </div>
             </div>
 
@@ -324,7 +463,7 @@ export default function CreatePage() {
               Absenden
             </button>
             <p className="text-center text-xs text-shake-text-muted">
-              Deine Story wird vor der Veröffentlichung geprüft. Good vibes only!
+              Deine Story wird vor der Ver&ouml;ffentlichung gepr&uuml;ft. Good vibes only!
             </p>
           </motion.div>
         )}
@@ -343,9 +482,9 @@ export default function CreatePage() {
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.2 }}>
               <CheckCircle className="h-20 w-20 text-shake-neon-green" />
             </motion.div>
-            <h2 className="mt-6 text-2xl font-bold">Danke! 🎉</h2>
+            <h2 className="mt-6 text-2xl font-bold">Danke!</h2>
             <p className="mt-2 max-w-xs text-shake-text-muted">
-              Deine Erinnerung wird geprüft und erscheint bald. Good vibes only! 🪩
+              Deine Erinnerung wird gepr&uuml;ft und erscheint bald. Good vibes only!
             </p>
             <div className="mt-8 flex gap-3">
               <button

@@ -38,7 +38,7 @@ export default function HomePage() {
             transition={{ delay: 0.4 }}
             className="mb-4 text-6xl font-bold tracking-tight sm:text-8xl"
           >
-            <span className="gradient-text">Shake</span>
+            <span className="gradient-text text-flicker">Shake</span>
             <br />
             <span className="text-shake-text">Memories</span>
           </motion.h1>

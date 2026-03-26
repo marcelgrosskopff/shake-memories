@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Type, ImagePlus, Sticker, X, Plus } from 'lucide-react'
+import { Type, ImagePlus, Sticker, X, Palette, Pencil } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // --- Types ---
@@ -36,7 +36,7 @@ export interface EditorState {
   collageImages: string[]
 }
 
-// --- Filter presets (Instagram-style names) ---
+// --- Filter presets ---
 const FILTERS = [
   { name: 'Normal', value: 'none', preview: '#1a1a2e' },
   { name: 'Neon', value: 'saturate(1.8) contrast(1.3) brightness(1.1)', preview: '#2d1b69' },
@@ -49,7 +49,7 @@ const FILTERS = [
   { name: 'Glow', value: 'brightness(1.2) saturate(1.4) contrast(1.1)', preview: '#1a0030' },
 ]
 
-const BACKGROUNDS = [
+const GRADIENT_BACKGROUNDS = [
   { name: 'Neon Night', value: 'linear-gradient(135deg, #0a0a0a 0%, #1a0020 50%, #0a0a0a 100%)' },
   { name: 'Sunrise', value: 'linear-gradient(180deg, #0c0020 0%, #2d1b4e 30%, #ff6b35 70%, #ffd700 100%)' },
   { name: 'Disco', value: 'linear-gradient(135deg, #ff2d78 0%, #b44dff 50%, #00d4ff 100%)' },
@@ -60,9 +60,20 @@ const BACKGROUNDS = [
   { name: 'Ocean', value: 'linear-gradient(135deg, #0a0020 0%, #00d4ff 100%)' },
 ]
 
+const SOLID_BACKGROUNDS = [
+  { name: 'Black', value: '#0a0a0a' },
+  { name: 'Dark Purple', value: '#1a0030' },
+  { name: 'Deep Blue', value: '#0a1628' },
+  { name: 'Dark Green', value: '#0a1a0a' },
+  { name: 'Charcoal', value: '#1a1a1a' },
+  { name: 'Wine', value: '#2a0a1a' },
+  { name: 'Navy', value: '#0a0a2a' },
+  { name: 'Espresso', value: '#1a1008' },
+]
+
 const STICKERS = [
-  '🪩', '🎉', '🍺', '🥂', '💃', '🕺', '🎵', '❤️', '🔥', '✨',
-  '🌅', '🎸', '🎤', '💜', '😂', '🥲', '🤘', '💫', '🍸', '😎',
+  '\u{1FA69}', '\u{1F389}', '\u{1F37A}', '\u{1F942}', '\u{1F483}', '\u{1F57A}', '\u{1F3B5}', '\u{2764}\u{FE0F}', '\u{1F525}', '\u{2728}',
+  '\u{1F305}', '\u{1F3B8}', '\u{1F3A4}', '\u{1F49C}', '\u{1F602}', '\u{1F972}', '\u{1F918}', '\u{1F4AB}', '\u{1F378}', '\u{1F60E}',
 ]
 
 const TEXT_STYLES: { name: string; value: TextOverlay['style'] }[] = [
@@ -77,7 +88,7 @@ const TEXT_COLORS = [
   '#ffd700', '#ff8c42', '#000000',
 ]
 
-type ActiveTool = null | 'text' | 'stickers' | 'bg'
+type ActiveTool = null | 'text' | 'stickers' | 'bg' | 'draw'
 
 interface CreativeEditorProps {
   onExport: (canvas: HTMLCanvasElement) => void
@@ -90,17 +101,21 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
   const [dragging, setDragging] = useState<string | null>(null)
   const [selectedFilter, setSelectedFilter] = useState(0)
   const [selectedBg, setSelectedBg] = useState(0)
+  const [bgType, setBgType] = useState<'gradient' | 'solid'>('gradient')
+  const [selectedSolidBg, setSelectedSolidBg] = useState(0)
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
   const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([])
   const [stickerOverlays, setStickerOverlays] = useState<StickerOverlay[]>([])
   const [editingText, setEditingText] = useState<string | null>(null)
 
+  const currentBg = bgType === 'gradient' ? GRADIENT_BACKGROUNDS[selectedBg].value : SOLID_BACKGROUNDS[selectedSolidBg].value
+
   // Sync state to parent
   const syncState = useCallback(() => {
     onStateChange({
-      backgroundType: backgroundImage ? 'image' : 'gradient',
-      backgroundColor: '#0a0a0a',
-      backgroundGradient: BACKGROUNDS[selectedBg].value,
+      backgroundType: backgroundImage ? 'image' : bgType === 'gradient' ? 'gradient' : 'color',
+      backgroundColor: bgType === 'solid' ? SOLID_BACKGROUNDS[selectedSolidBg].value : '#0a0a0a',
+      backgroundGradient: bgType === 'gradient' ? GRADIENT_BACKGROUNDS[selectedBg].value : '',
       backgroundImage,
       filter: FILTERS[selectedFilter].value,
       textOverlays,
@@ -108,20 +123,21 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
       collageLayout: null,
       collageImages: [],
     })
-  }, [backgroundImage, selectedBg, selectedFilter, textOverlays, stickerOverlays, onStateChange])
+  }, [backgroundImage, bgType, selectedBg, selectedSolidBg, selectedFilter, textOverlays, stickerOverlays, onStateChange])
 
   // --- Actions ---
   const addText = () => {
     const t: TextOverlay = {
       id: crypto.randomUUID(),
       text: 'Tippe hier',
-      x: 50, y: 40,
+      x: 50, y: 50,
       fontSize: 28,
       color: '#ffffff',
       style: 'neon',
     }
     setTextOverlays(prev => [...prev, t])
     setEditingText(t.id)
+    setActiveTool('text')
     syncState()
   }
 
@@ -188,12 +204,12 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* === CANVAS (9:16, fullscreen-ish) === */}
+      {/* === CANVAS (9:16, larger) === */}
       <div
         ref={canvasRef}
-        className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-2xl border border-white/10"
+        className="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-2xl border border-white/10"
         style={{
-          background: backgroundImage ? `url(${backgroundImage}) center/cover` : BACKGROUNDS[selectedBg].value,
+          background: backgroundImage ? `url(${backgroundImage}) center/cover` : currentBg,
           filter: FILTERS[selectedFilter].value !== 'none' ? FILTERS[selectedFilter].value : undefined,
         }}
         onPointerMove={handlePointerMove}
@@ -258,7 +274,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
         {textOverlays.length === 0 && stickerOverlays.length === 0 && !backgroundImage && (
           <div className="absolute inset-0 flex items-center justify-center">
             <p className="text-white/20 text-sm text-center px-8">
-              Wähle einen Filter, füg Text oder Sticker hinzu
+              W&auml;hle einen Filter, f&uuml;g Text oder Sticker hinzu
             </p>
           </div>
         )}
@@ -270,7 +286,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
         </label>
       </div>
 
-      {/* === FILTER STRIP (Instagram-style horizontal scroll) === */}
+      {/* === FILTER STRIP === */}
       <div className="flex gap-3 overflow-x-auto pb-1 px-1 snap-x">
         {FILTERS.map((filter, i) => (
           <button
@@ -281,12 +297,12 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
             <div
               className={cn(
                 'mb-1 h-16 w-16 rounded-xl border-2 transition-all',
-                i === selectedFilter ? 'border-shake-neon-pink scale-105' : 'border-transparent'
+                i === selectedFilter ? 'border-shake-neon-pink scale-105' : 'border-transparent opacity-70'
               )}
               style={{
                 background: backgroundImage
                   ? `url(${backgroundImage}) center/cover`
-                  : BACKGROUNDS[selectedBg].value,
+                  : currentBg,
                 filter: filter.value !== 'none' ? filter.value : undefined,
               }}
             />
@@ -300,37 +316,33 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
         ))}
       </div>
 
-      {/* === TOOL BAR (3 buttons: Text, Sticker, Background) === */}
-      <div className="flex justify-center gap-6">
-        <button
-          onClick={() => { setActiveTool(activeTool === 'text' ? null : 'text'); addText() }}
-          className="flex flex-col items-center gap-1 text-shake-text-muted hover:text-shake-neon-pink transition-colors"
-        >
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
-            <Type className="h-5 w-5" />
-          </div>
-          <span className="text-[10px]">Text</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTool(activeTool === 'stickers' ? null : 'stickers')}
-          className="flex flex-col items-center gap-1 text-shake-text-muted hover:text-shake-neon-pink transition-colors"
-        >
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
-            <Sticker className="h-5 w-5" />
-          </div>
-          <span className="text-[10px]">Sticker</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTool(activeTool === 'bg' ? null : 'bg')}
-          className="flex flex-col items-center gap-1 text-shake-text-muted hover:text-shake-neon-pink transition-colors"
-        >
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
-            <Plus className="h-5 w-5" />
-          </div>
-          <span className="text-[10px]">Hintergrund</span>
-        </button>
+      {/* === TOOL BAR (Instagram-like circular buttons with labels) === */}
+      <div className="flex justify-center gap-5">
+        {[
+          { tool: 'text' as const, icon: Type, label: 'Text', action: () => addText() },
+          { tool: 'stickers' as const, icon: Sticker, label: 'Sticker', action: () => setActiveTool(activeTool === 'stickers' ? null : 'stickers') },
+          { tool: 'bg' as const, icon: Palette, label: 'Hintergrund', action: () => setActiveTool(activeTool === 'bg' ? null : 'bg') },
+          { tool: 'draw' as const, icon: Pencil, label: 'Zeichnen', action: () => setActiveTool(activeTool === 'draw' ? null : 'draw') },
+        ].map((item) => (
+          <button
+            key={item.tool}
+            onClick={item.action}
+            className={cn(
+              'flex flex-col items-center gap-1.5 transition-colors',
+              activeTool === item.tool ? 'text-shake-neon-pink' : 'text-shake-text-muted hover:text-shake-text'
+            )}
+          >
+            <div className={cn(
+              'flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all',
+              activeTool === item.tool
+                ? 'border-shake-neon-pink bg-shake-neon-pink/10'
+                : 'border-white/15 bg-white/5'
+            )}>
+              <item.icon className="h-5 w-5" />
+            </div>
+            <span className="text-[10px] font-medium">{item.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* === TOOL PANELS === */}
@@ -438,23 +450,87 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex gap-2 overflow-x-auto rounded-xl bg-shake-dark/80 p-3">
-              {BACKGROUNDS.map((bg, i) => (
+            <div className="space-y-3 rounded-xl bg-shake-dark/80 p-3">
+              {/* Tabs: Gradients vs Solid */}
+              <div className="flex gap-2 mb-1">
                 <button
-                  key={bg.name}
-                  onClick={() => { setSelectedBg(i); setBackgroundImage(null); syncState() }}
+                  onClick={() => setBgType('gradient')}
                   className={cn(
-                    'h-14 w-14 shrink-0 rounded-xl border-2 transition-all',
-                    i === selectedBg && !backgroundImage ? 'border-shake-neon-pink' : 'border-transparent'
+                    'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors',
+                    bgType === 'gradient' ? 'bg-shake-neon-pink text-white' : 'bg-white/10 text-shake-text-muted'
                   )}
-                  style={{ background: bg.value }}
-                  title={bg.name}
-                />
-              ))}
-              <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-white/20 text-white/40 hover:border-white/40">
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                <ImagePlus className="h-5 w-5" />
-              </label>
+                >
+                  Gradients
+                </button>
+                <button
+                  onClick={() => setBgType('solid')}
+                  className={cn(
+                    'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors',
+                    bgType === 'solid' ? 'bg-shake-neon-pink text-white' : 'bg-white/10 text-shake-text-muted'
+                  )}
+                >
+                  Farben
+                </button>
+              </div>
+
+              {bgType === 'gradient' ? (
+                <div className="flex gap-2 overflow-x-auto">
+                  {GRADIENT_BACKGROUNDS.map((bg, i) => (
+                    <button
+                      key={bg.name}
+                      onClick={() => { setSelectedBg(i); setBackgroundImage(null); syncState() }}
+                      className="shrink-0 text-center"
+                    >
+                      <div
+                        className={cn(
+                          'h-14 w-14 rounded-xl border-2 transition-all',
+                          i === selectedBg && !backgroundImage && bgType === 'gradient' ? 'border-shake-neon-pink' : 'border-transparent'
+                        )}
+                        style={{ background: bg.value }}
+                      />
+                      <span className="text-[9px] text-shake-text-muted">{bg.name}</span>
+                    </button>
+                  ))}
+                  <label className="flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-white/20 text-white/40 hover:border-white/40">
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                    <ImagePlus className="h-5 w-5" />
+                  </label>
+                </div>
+              ) : (
+                <div className="flex gap-2 overflow-x-auto">
+                  {SOLID_BACKGROUNDS.map((bg, i) => (
+                    <button
+                      key={bg.name}
+                      onClick={() => { setSelectedSolidBg(i); setBackgroundImage(null); syncState() }}
+                      className="shrink-0 text-center"
+                    >
+                      <div
+                        className={cn(
+                          'h-14 w-14 rounded-xl border-2 transition-all',
+                          i === selectedSolidBg && !backgroundImage && bgType === 'solid' ? 'border-shake-neon-pink' : 'border-transparent'
+                        )}
+                        style={{ background: bg.value }}
+                      />
+                      <span className="text-[9px] text-shake-text-muted">{bg.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTool === 'draw' && (
+          <motion.div
+            key="draw"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="flex items-center justify-center gap-2 rounded-xl bg-shake-dark/80 p-4 text-center">
+              <Pencil className="h-5 w-5 text-shake-text-muted" />
+              <span className="text-sm text-shake-text-muted">Zeichnen kommt bald!</span>
             </div>
           </motion.div>
         )}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Camera, ImagePlus, X, ChevronLeft } from 'lucide-react'
+import { ImagePlus, X, ChevronLeft, Moon, Heart, Sunrise, Lock, Music, Users, PartyPopper, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SongSearch, type SpotifyTrack } from './song-search'
 
@@ -13,89 +13,113 @@ interface SpecialTemplatesProps {
 const TEMPLATES = [
   {
     id: 'then-now',
-    name: 'Damals vs. Hüt',
-    emoji: '📸',
-    description: 'Wer warsch du domols und wer bisch hüt?',
+    name: 'Damals vs. H\u00fct',
+    emoji: '\u{1F4F8}',
+    icon: Star,
+    description: 'Wer warsch du domols und wer bisch h\u00fct?',
     slots: [
-      { label: 'Damals', hint: 'Foto vo früener' },
-      { label: 'Heute', hint: 'Aktuells Foto' },
+      { label: 'Damals', hint: 'Foto vo fr\u00fcener', placeholder: '\u{1F476}' },
+      { label: 'Heute', hint: 'Aktuells Foto', placeholder: '\u{1F60E}' },
     ],
     layout: 'split' as const,
     gradient: 'from-shake-gold/30 to-shake-warm/20',
+    accentColor: '#ffd700',
+    bgStyle: 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,66,0.05))',
   },
   {
     id: 'love-story',
     name: 'Shake Love Story',
-    emoji: '❤️',
+    emoji: '\u{2764}\u{FE0F}',
+    icon: Heart,
     description: 'Hosch d\'Liebi im Shake gfunda?',
     slots: [
-      { label: 'Damals', hint: 'Wie es agfanga het' },
-      { label: 'Heute', hint: 'Wie es hüt isch' },
+      { label: 'Damals', hint: 'Wie es agfanga het', placeholder: '\u{1F496}' },
+      { label: 'Heute', hint: 'Wie es h\u00fct isch', placeholder: '\u{1F48D}' },
     ],
     layout: 'split' as const,
     gradient: 'from-shake-neon-pink/30 to-shake-neon-purple/20',
+    accentColor: '#ff2d78',
+    bgStyle: 'linear-gradient(135deg, rgba(255,45,120,0.08), rgba(180,77,255,0.05))',
   },
   {
     id: 'first-time',
     name: 'Mis 1. Mal',
-    emoji: '🎉',
+    emoji: '\u{1F389}',
+    icon: PartyPopper,
     description: 'Erinnersch du di an dis erschte Mal?',
-    slots: [{ label: 'Mis erschte Mal', hint: 'Foto oder Selfie' }],
+    slots: [{ label: 'Mis erschte Mal', hint: 'Foto oder Selfie', placeholder: '\u{1F31F}' }],
     layout: 'single' as const,
-    prompts: ['Wenn isch es gsi?', 'Mit wem warsch du do?', 'Was hosch gfühlt?'],
+    prompts: ['Wenn isch es gsi?', 'Mit wem warsch du do?', 'Was hosch gf\u00fchlt?'],
     gradient: 'from-shake-neon-green/20 to-shake-neon-blue/20',
+    accentColor: '#39ff14',
+    bgStyle: 'linear-gradient(135deg, rgba(57,255,20,0.06), rgba(0,212,255,0.04))',
   },
   {
     id: 'crew',
     name: 'D\' Crew',
-    emoji: '👯',
+    emoji: '\u{1F46F}',
+    icon: Users,
     description: 'Zeig dini Shake-Gang!',
     slots: [
-      { label: 'D\' Crew', hint: 'Gruppefoto vo domols' },
-      { label: 'Und hüt?', hint: 'Gruppefoto vo hüt' },
+      { label: 'D\' Crew', hint: 'Gruppefoto vo domols', placeholder: '\u{1F91C}' },
+      { label: 'Und h\u00fct?', hint: 'Gruppefoto vo h\u00fct', placeholder: '\u{1F91B}' },
     ],
     layout: 'split' as const,
     gradient: 'from-shake-neon-blue/20 to-shake-neon-purple/20',
+    accentColor: '#00d4ff',
+    bgStyle: 'linear-gradient(135deg, rgba(0,212,255,0.06), rgba(180,77,255,0.04))',
   },
   {
     id: 'best-night',
     name: 'Die beschti Nacht',
-    emoji: '🌙',
+    emoji: '\u{1F319}',
+    icon: Moon,
     description: 'Die eini Nacht wo du nie vergissch',
-    slots: [{ label: 'Foto', hint: 'Falls du eis hosch...' }],
+    slots: [{ label: 'Foto', hint: 'Falls du eis hosch...', placeholder: '\u{1FA69}' }],
     layout: 'single' as const,
-    prompts: ['Was isch passiert?', 'Weles Johr?', 'Welä Song isch glofa?'],
+    prompts: ['Was isch passiert?', 'Weles Johr?', 'Wel\u00e4 Song isch glofa?'],
     gradient: 'from-shake-neon-purple/30 to-shake-black',
+    accentColor: '#b44dff',
+    bgStyle: 'linear-gradient(135deg, rgba(180,77,255,0.1), rgba(10,10,10,0.95))',
   },
   {
     id: 'sunrise',
     name: 'Sunrise Session',
-    emoji: '🌅',
-    description: 'Die legendära Morga noch de Nacht',
-    slots: [{ label: 'Sunrise', hint: 'De Morga drnoch' }],
+    emoji: '\u{1F305}',
+    icon: Sunrise,
+    description: 'Die legend\u00e4ra Morga noch de Nacht',
+    slots: [{ label: 'Sunrise', hint: 'De Morga drnoch', placeholder: '\u{2600}\u{FE0F}' }],
     layout: 'single' as const,
     prompts: ['Wie isch de Heimweg gsi?'],
     gradient: 'from-shake-warm/30 to-shake-gold/20',
+    accentColor: '#ff8c42',
+    bgStyle: 'linear-gradient(180deg, #1a0c00 0%, #2d1200 30%, rgba(255,107,53,0.15) 70%, rgba(255,215,0,0.1) 100%)',
   },
   {
     id: 'confession',
     name: 'Beichte',
-    emoji: '🤫',
-    description: 'Was du no nie öpperem verzellt hosch...',
+    emoji: '\u{1F92B}',
+    icon: Lock,
+    description: 'Was du no nie \u00f6pperem verzellt hosch...',
     slots: [],
     layout: 'text-only' as const,
-    prompts: ['Was isch im Shake passiert, wo niämed weiss?'],
+    prompts: ['Was isch im Shake passiert, wo ni\u00e4med weiss?'],
     gradient: 'from-shake-neon-pink/20 to-shake-dark',
+    accentColor: '#ff2d78',
+    bgStyle: 'linear-gradient(180deg, #0a0a0a 0%, #1a0010 50%, #0d0008 100%)',
   },
   {
     id: 'playlist',
     name: 'Mi Shake-Song',
-    emoji: '🎵',
+    emoji: '\u{1F3B5}',
+    icon: Music,
     description: 'De Song wo di immer ans Shake erinnert',
     slots: [],
     layout: 'song' as const,
-    prompts: ['Warum genau dä Song?'],
+    prompts: ['Warum genau d\u00e4 Song?'],
     gradient: 'from-shake-neon-blue/20 to-shake-dark',
+    accentColor: '#00d4ff',
+    bgStyle: 'linear-gradient(135deg, rgba(0,212,255,0.08), rgba(10,10,10,0.95))',
   },
 ]
 
@@ -157,19 +181,23 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
               <div className="text-sm font-bold text-shake-text">{tmpl.name}</div>
               <div className="text-[11px] text-shake-text-muted truncate">{tmpl.description}</div>
             </div>
-            <span className="text-shake-text-muted text-lg">›</span>
+            <span className="text-shake-text-muted text-lg">&rsaquo;</span>
           </motion.button>
         ))}
       </div>
     )
   }
 
-  // === Selected template ===
+  // === Selected template inner page ===
+  const isConfession = template?.id === 'confession'
+  const isSunrise = template?.id === 'sunrise'
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       className="space-y-4"
+      style={{ background: template?.bgStyle }}
     >
       {/* Header with back */}
       <button
@@ -184,12 +212,42 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
         </div>
       </button>
 
-      {/* Split layout (Damals vs. Heute etc.) */}
+      {/* Confession template - dark secretive vibe */}
+      {isConfession && (
+        <div className="rounded-2xl border border-shake-neon-pink/10 bg-gradient-to-b from-black via-[#0d0008] to-black p-5">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <Lock className="h-4 w-4 text-shake-neon-pink/50" />
+            <span className="text-xs uppercase tracking-widest text-shake-neon-pink/40">Vertraulich</span>
+            <Lock className="h-4 w-4 text-shake-neon-pink/50" />
+          </div>
+        </div>
+      )}
+
+      {/* Sunrise template - warm dawn gradient header */}
+      {isSunrise && (
+        <div
+          className="rounded-2xl p-4 text-center"
+          style={{
+            background: 'linear-gradient(180deg, #1a0800 0%, #3d1200 30%, rgba(255,107,53,0.3) 70%, rgba(255,215,0,0.15) 100%)',
+            border: '1px solid rgba(255,140,66,0.15)',
+          }}
+        >
+          <div className="text-3xl mb-1">{'\u{1F305}'}</div>
+          <span className="text-xs text-shake-warm/60">Die Sonne geht auf...</span>
+        </div>
+      )}
+
+      {/* Split layout (Damals vs. Heute etc.) with divider */}
       {template?.layout === 'split' && (
-        <div className="flex gap-2">
+        <div className="relative flex gap-2">
           {template.slots.map((slot, i) => (
             <div key={i} className="flex-1">
-              <div className="mb-1.5 text-center text-xs font-bold text-shake-neon-pink uppercase tracking-wider">{slot.label}</div>
+              <div
+                className="mb-1.5 text-center text-xs font-bold uppercase tracking-wider"
+                style={{ color: template.accentColor }}
+              >
+                {slot.label}
+              </div>
               {images[i] ? (
                 <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
                   <img src={images[i]!} alt="" className="h-full w-full object-cover" />
@@ -204,7 +262,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                   </button>
                 </div>
               ) : (
-                <label className="flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/20 bg-white/5 transition-colors active:bg-white/10">
+                <label className="flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/20 bg-white/5 transition-colors active:bg-white/10">
                   <input
                     type="file"
                     accept="image/*"
@@ -212,12 +270,27 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                     onChange={(e) => handleImageUpload(e, i)}
                     className="hidden"
                   />
-                  <Camera className="h-8 w-8 text-white/30" />
+                  <span className="text-4xl opacity-30">{slot.placeholder}</span>
                   <span className="text-[11px] text-white/40">{slot.hint}</span>
                 </label>
               )}
             </div>
           ))}
+
+          {/* VS divider badge */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-full border-2 text-xs font-black"
+              style={{
+                borderColor: template.accentColor,
+                backgroundColor: 'rgba(10,10,10,0.9)',
+                color: template.accentColor,
+                boxShadow: `0 0 12px ${template.accentColor}40`,
+              }}
+            >
+              VS
+            </div>
+          </div>
         </div>
       )}
 
@@ -235,9 +308,9 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
               </button>
             </div>
           ) : (
-            <label className="flex aspect-square mx-auto max-w-xs cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/20 bg-white/5 transition-colors active:bg-white/10">
+            <label className="flex aspect-square mx-auto max-w-xs cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/20 bg-white/5 transition-colors active:bg-white/10">
               <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 0)} className="hidden" />
-              <ImagePlus className="h-10 w-10 text-white/30" />
+              <span className="text-5xl opacity-25">{template.slots[0].placeholder}</span>
               <span className="text-sm text-white/40">{template.slots[0].hint}</span>
             </label>
           )}
@@ -249,17 +322,25 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
         <SongSearch selected={selectedSong} onSelect={setSelectedSong} />
       )}
 
-      {/* Prompts */}
+      {/* Prompts with template-specific accent colors */}
       {template?.prompts && (
         <div className="space-y-3">
           {template.prompts.map((prompt) => (
             <div key={prompt}>
-              <label className="mb-1 block text-xs font-medium text-shake-neon-blue">{prompt}</label>
+              <label
+                className="mb-1 block text-xs font-medium"
+                style={{ color: template.accentColor }}
+              >
+                {prompt}
+              </label>
               <input
                 value={answers[prompt] || ''}
                 onChange={(e) => setAnswers(prev => ({ ...prev, [prompt]: e.target.value }))}
                 placeholder="..."
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-shake-text placeholder:text-white/20 focus:border-shake-neon-pink/50 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-shake-text placeholder:text-white/20 focus:outline-none transition-colors"
+                style={{
+                  borderColor: answers[prompt] ? `${template.accentColor}40` : undefined,
+                }}
               />
             </div>
           ))}
@@ -272,9 +353,13 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={handleComplete}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-shake-neon-green/20 py-3 text-sm font-medium text-shake-neon-green active:bg-shake-neon-green/30"
+          className="flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-medium active:opacity-80"
+          style={{
+            backgroundColor: `${template?.accentColor}20`,
+            color: template?.accentColor,
+          }}
         >
-          ✓ Fertig
+          {'\u2713'} Fertig
         </motion.button>
       )}
     </motion.div>
