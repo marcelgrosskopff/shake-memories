@@ -135,10 +135,38 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
   const fmt = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`
   const currentFilter = VIDEO_FILTERS[selectedFilter].value
 
+  // Type-specific atmospheric styles
+  const atmosphereStyles = type === 'audio'
+    ? {
+        containerBg: 'linear-gradient(180deg, rgba(10,40,28,0.9), rgba(6,26,18,0.95), rgba(10,10,10,0.98))',
+        containerBorder: '1px solid rgba(57,255,20,0.12)',
+        containerShadow: '0 0 40px rgba(57,255,20,0.05), 0 8px 32px rgba(0,0,0,0.4)',
+        glowBg: 'radial-gradient(ellipse at center, rgba(57,255,20,0.08), rgba(0,200,100,0.05), transparent 70%)',
+      }
+    : {
+        containerBg: 'linear-gradient(180deg, rgba(40,16,0,0.9), rgba(26,8,0,0.95), rgba(10,10,10,0.98))',
+        containerBorder: '1px solid rgba(255,140,66,0.12)',
+        containerShadow: '0 0 40px rgba(255,140,66,0.05), 0 8px 32px rgba(0,0,0,0.4)',
+        glowBg: 'radial-gradient(ellipse at center, rgba(255,140,66,0.08), rgba(255,80,30,0.05), transparent 70%)',
+      }
+
   return (
     <div className="space-y-4">
-      {/* Preview area */}
-      <div className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-shake-dark">
+      {/* Preview area with atmospheric glow */}
+      <div className="relative">
+        {/* Glow behind recording container */}
+        <div
+          className="absolute -inset-3 rounded-3xl opacity-60 blur-2xl"
+          style={{ background: atmosphereStyles.glowBg }}
+        />
+        <div
+          className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden rounded-2xl"
+          style={{
+            background: atmosphereStyles.containerBg,
+            border: atmosphereStyles.containerBorder,
+            boxShadow: atmosphereStyles.containerShadow,
+          }}
+        >
         {type === 'video' && (
           <>
             <video
@@ -160,8 +188,17 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
             )}
             {status === 'idle' && !streamRef.current && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                <Video className="h-12 w-12 text-white/20" />
-                <p className="text-sm text-white/30">Dr&uuml;cke den roten Button</p>
+                <div
+                  className="flex h-20 w-20 items-center justify-center rounded-full"
+                  style={{
+                    background: 'rgba(255,140,66,0.05)',
+                    border: '1px solid rgba(255,140,66,0.15)',
+                    boxShadow: '0 0 30px rgba(255,140,66,0.05)',
+                  }}
+                >
+                  <Video className="h-10 w-10" style={{ color: 'rgba(255,140,66,0.3)' }} />
+                </div>
+                <p className="text-sm" style={{ color: 'rgba(255,140,66,0.35)' }}>Dr&uuml;cke den roten Button</p>
               </div>
             )}
           </>
@@ -169,24 +206,31 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
 
         {type === 'audio' && (
           <div className="flex h-full flex-col items-center justify-center gap-6 px-6">
-            {/* IDLE state */}
+            {/* IDLE state - green atmospheric */}
             {status === 'idle' && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex flex-col items-center gap-4"
               >
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white/5 border border-white/10">
-                  <Mic className="h-10 w-10 text-white/20" />
+                <div
+                  className="flex h-24 w-24 items-center justify-center rounded-full"
+                  style={{
+                    background: 'rgba(57,255,20,0.05)',
+                    border: '1px solid rgba(57,255,20,0.15)',
+                    boxShadow: '0 0 30px rgba(57,255,20,0.05)',
+                  }}
+                >
+                  <Mic className="h-10 w-10" style={{ color: 'rgba(57,255,20,0.3)' }} />
                 </div>
-                <p className="text-sm text-white/30">Bereit zum Aufnehmen</p>
+                <p className="text-sm" style={{ color: 'rgba(57,255,20,0.35)' }}>Bereit zum Aufnehmen</p>
                 {/* Flat waveform bars for idle */}
                 <div className="flex items-center gap-[3px] h-12">
                   {Array.from({ length: WAVEFORM_BARS }).map((_, i) => (
                     <div
                       key={i}
-                      className="w-[5px] rounded-full bg-white/10"
-                      style={{ height: '6px' }}
+                      className="w-[5px] rounded-full"
+                      style={{ height: '6px', backgroundColor: 'rgba(57,255,20,0.12)' }}
                     />
                   ))}
                 </div>
@@ -202,15 +246,19 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
               >
                 <div className="text-4xl font-mono font-bold text-red-500">{fmt(duration)}</div>
 
-                {/* Animated waveform visualization */}
+                {/* Animated waveform visualization - vivid green for audio */}
                 <div className="flex items-center gap-[3px] h-20">
                   {waveformHeights.map((h, i) => (
                     <motion.div
                       key={i}
-                      className="w-[5px] rounded-full bg-gradient-to-t from-red-500/60 to-red-400"
+                      className="w-[5px] rounded-full"
+                      style={{
+                        background: `linear-gradient(to top, rgba(57,255,20,0.4), rgba(0,220,100,0.8))`,
+                        minHeight: '4px',
+                        boxShadow: '0 0 6px rgba(57,255,20,0.3)',
+                      }}
                       animate={{ height: `${h}%` }}
                       transition={{ duration: 0.1, ease: 'easeOut' }}
-                      style={{ minHeight: '4px' }}
                     />
                   ))}
                 </div>
@@ -248,6 +296,7 @@ export function MediaRecorder({ type, onRecordingComplete }: MediaRecorderProps)
             <span className="text-xs font-mono text-white">{fmt(duration)}</span>
           </div>
         )}
+        </div>
       </div>
 
       {/* Video filter strip */}

@@ -239,18 +239,39 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="space-y-4"
-      style={{ background: template?.bgStyle }}
+      className="relative -mx-4 px-4 space-y-4 pb-4"
+      style={{
+        background: template?.bgStyle,
+        minHeight: '60vh',
+      }}
     >
-      {/* Header with back */}
+      {/* Full atmospheric gradient overlay */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `radial-gradient(circle at 50% 0%, ${template?.accentColor}12, transparent 60%)`,
+        }}
+      />
+
+      {/* Content layer above gradient */}
+      <div className="relative">
+      {/* Header with back - styled with accent */}
       <button
-        onClick={() => { setSelected(null); setImages([]); setFiles([]); setAnswers({}) }}
-        className="flex items-center gap-2 text-shake-text-muted"
+        onClick={() => { setSelected(null); setImages([]); setFiles([]); setAnswers({}); setSelectedSong(null) }}
+        className="flex items-center gap-2 pt-2"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <div
+          className="flex h-8 w-8 items-center justify-center rounded-full"
+          style={{
+            background: `${template?.accentColor}15`,
+            border: `1px solid ${template?.accentColor}30`,
+          }}
+        >
+          <ChevronLeft className="h-4 w-4" style={{ color: template?.accentColor }} />
+        </div>
         <span className="text-3xl">{template?.emoji}</span>
         <div>
-          <div className="text-sm font-bold text-shake-text">{template?.name}</div>
+          <div className="text-sm font-bold" style={{ color: template?.accentColor }}>{template?.name}</div>
           <div className="text-[10px] text-shake-text-muted">{template?.description}</div>
         </div>
       </button>
@@ -292,7 +313,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                 {slot.label}
               </div>
               {images[i] ? (
-                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/10">
+                <div className="relative aspect-[3/4] overflow-hidden rounded-2xl" style={{ border: `1px solid ${template.accentColor}25` }}>
                   <img src={images[i]!} alt="" className="h-full w-full object-cover" />
                   <button
                     onClick={() => {
@@ -305,16 +326,29 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                   </button>
                 </div>
               ) : (
-                <label className="flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/20 bg-white/5 transition-colors active:bg-white/10">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture={i === 1 ? 'user' : undefined}
-                    onChange={(e) => handleImageUpload(e, i)}
-                    className="hidden"
+                <label className="relative flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl transition-colors active:bg-white/10">
+                  {/* Atmospheric glow behind empty slot */}
+                  <div
+                    className="absolute inset-0 rounded-2xl opacity-30 blur-lg"
+                    style={{ background: `radial-gradient(circle at center, ${template.accentColor}20, transparent 70%)` }}
                   />
-                  <span className="text-4xl opacity-30">{slot.placeholder}</span>
-                  <span className="text-[11px] text-white/40">{slot.hint}</span>
+                  <div
+                    className="relative flex aspect-[3/4] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl"
+                    style={{
+                      border: `1px dashed ${template.accentColor}30`,
+                      background: `${template.accentColor}05`,
+                    }}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture={i === 1 ? 'user' : undefined}
+                      onChange={(e) => handleImageUpload(e, i)}
+                      className="hidden"
+                    />
+                    <span className="text-4xl opacity-30">{slot.placeholder}</span>
+                    <span className="text-[11px]" style={{ color: `${template.accentColor}60` }}>{slot.hint}</span>
+                  </div>
                 </label>
               )}
             </div>
@@ -341,7 +375,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
       {template?.layout === 'single' && template.slots.length > 0 && (
         <div>
           {images[0] ? (
-            <div className="relative mx-auto aspect-square max-w-xs overflow-hidden rounded-2xl border border-white/10">
+            <div className="relative mx-auto aspect-square max-w-xs overflow-hidden rounded-2xl" style={{ border: `1px solid ${template.accentColor}25` }}>
               <img src={images[0]} alt="" className="h-full w-full object-cover" />
               <button
                 onClick={() => { setImages([null]); setFiles([null as unknown as File]) }}
@@ -351,11 +385,24 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
               </button>
             </div>
           ) : (
-            <label className="flex aspect-square mx-auto max-w-xs cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/20 bg-white/5 transition-colors active:bg-white/10">
-              <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 0)} className="hidden" />
-              <span className="text-5xl opacity-25">{template.slots[0].placeholder}</span>
-              <span className="text-sm text-white/40">{template.slots[0].hint}</span>
-            </label>
+            <div className="relative mx-auto max-w-xs">
+              {/* Atmospheric glow */}
+              <div
+                className="absolute inset-0 rounded-2xl opacity-30 blur-xl"
+                style={{ background: `radial-gradient(circle at center, ${template.accentColor}20, transparent 70%)` }}
+              />
+              <label
+                className="relative flex aspect-square cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl transition-colors active:bg-white/10"
+                style={{
+                  border: `1px dashed ${template.accentColor}30`,
+                  background: `${template.accentColor}05`,
+                }}
+              >
+                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 0)} className="hidden" />
+                <span className="text-5xl opacity-25">{template.slots[0].placeholder}</span>
+                <span className="text-sm" style={{ color: `${template.accentColor}60` }}>{template.slots[0].hint}</span>
+              </label>
+            </div>
           )}
         </div>
       )}
@@ -365,9 +412,18 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
         <SongSearch selected={selectedSong} onSelect={setSelectedSong} />
       )}
 
-      {/* Prompts with template-specific accent colors */}
+      {/* Prompts with template-specific accent colors - integrated design */}
       {template?.prompts && (
-        <div className="space-y-3">
+        <div
+          className="space-y-3 rounded-2xl p-4"
+          style={{
+            background: `${template.accentColor}05`,
+            border: `1px solid ${template.accentColor}10`,
+          }}
+        >
+          <div className="text-[9px] uppercase tracking-[0.15em]" style={{ color: `${template.accentColor}50` }}>
+            Erzhl meh...
+          </div>
           {template.prompts.map((prompt) => (
             <div key={prompt}>
               <label
@@ -380,9 +436,11 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                 value={answers[prompt] || ''}
                 onChange={(e) => setAnswers(prev => ({ ...prev, [prompt]: e.target.value }))}
                 placeholder="..."
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-shake-text placeholder:text-white/20 focus:outline-none transition-colors"
+                className="w-full rounded-xl px-4 py-2.5 text-sm text-shake-text placeholder:text-white/20 focus:outline-none transition-colors"
                 style={{
-                  borderColor: answers[prompt] ? `${template.accentColor}40` : undefined,
+                  background: `${template.accentColor}08`,
+                  border: `1px solid ${answers[prompt] ? `${template.accentColor}40` : `${template.accentColor}15`}`,
+                  boxShadow: answers[prompt] ? `0 0 15px ${template.accentColor}08` : undefined,
                 }}
               />
             </div>
@@ -400,11 +458,13 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
           style={{
             backgroundColor: `${template?.accentColor}20`,
             color: template?.accentColor,
+            boxShadow: `0 0 20px ${template?.accentColor}10`,
           }}
         >
           {'\u2713'} Fertig
         </motion.button>
       )}
+      </div>
     </motion.div>
   )
 }

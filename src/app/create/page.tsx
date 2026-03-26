@@ -262,26 +262,90 @@ export default function CreatePage() {
     )
   }
 
+  // Mode-specific theme config
+  const modeTheme = {
+    visual: {
+      bg: 'linear-gradient(180deg, #1a0020 0%, #0d0015 40%, #0a0a0a 100%)',
+      accent: '#ff2d78',
+      accentGlow: 'radial-gradient(circle at 50% 0%, rgba(255,45,120,0.15), transparent 60%)',
+      label: 'Visual',
+      icon: <Brush className="h-4 w-4" />,
+    },
+    text: {
+      bg: 'linear-gradient(180deg, #0a1a3a 0%, #0a1028 40%, #0a0a0a 100%)',
+      accent: '#00d4ff',
+      accentGlow: 'radial-gradient(circle at 50% 0%, rgba(0,212,255,0.12), transparent 60%)',
+      label: 'Text',
+      icon: <Type className="h-4 w-4" />,
+    },
+    voice: {
+      bg: 'linear-gradient(180deg, #0a2a1a 0%, #061a12 40%, #0a0a0a 100%)',
+      accent: '#39ff14',
+      accentGlow: 'radial-gradient(circle at 50% 0%, rgba(57,255,20,0.1), transparent 60%)',
+      label: 'Audio',
+      icon: <Mic className="h-4 w-4" />,
+    },
+    video: {
+      bg: 'linear-gradient(180deg, #2a1000 0%, #1a0800 40%, #0a0a0a 100%)',
+      accent: '#ff8c42',
+      accentGlow: 'radial-gradient(circle at 50% 0%, rgba(255,140,66,0.15), transparent 60%)',
+      label: 'Video',
+      icon: <Video className="h-4 w-4" />,
+    },
+    template: {
+      bg: 'linear-gradient(180deg, #1a1000 0%, #120a00 40%, #0a0a0a 100%)',
+      accent: '#ffd700',
+      accentGlow: 'radial-gradient(circle at 50% 0%, rgba(255,215,0,0.1), transparent 60%)',
+      label: 'Spezial',
+      icon: <Camera className="h-4 w-4" />,
+    },
+  }
+
+  const theme = modeTheme[mode as keyof typeof modeTheme] || modeTheme.text
+
+  // Details step gets a warm atmospheric background
+  const detailsBg = step === 'details'
+    ? 'linear-gradient(180deg, #1a0a10 0%, #120810 40%, #0a0a0a 100%)'
+    : theme.bg
+  const detailsGlow = step === 'details'
+    ? 'radial-gradient(circle at 50% 0%, rgba(255,45,120,0.1), transparent 60%)'
+    : theme.accentGlow
+
   return (
-    <div className="min-h-dvh bg-shake-black px-4 pt-6 pb-24">
-      {/* Header */}
+    <div
+      className="min-h-dvh pb-24"
+      style={{ background: detailsBg }}
+    >
+      {/* Atmospheric glow overlay */}
+      <div className="pointer-events-none fixed inset-0 z-0" style={{ background: detailsGlow }} />
+
+      <div className="relative z-10 px-4 pt-6">
+      {/* Header with mode identity */}
       <div className="mb-4 flex items-center gap-3">
         <button
           onClick={() => {
             if (step === 'details') setStep('create')
             else if (step === 'create') setMode('choose')
           }}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 active:bg-white/20"
+          className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+          style={{
+            backgroundColor: `${theme.accent}15`,
+            border: `1px solid ${theme.accent}30`,
+          }}
         >
           <ArrowLeft className="h-5 w-5 text-shake-text" />
         </button>
-        <h1 className="text-lg font-semibold">
-          {mode === 'visual' && 'Visual'}
-          {mode === 'text' && 'Text'}
-          {mode === 'voice' && 'Audio'}
-          {mode === 'video' && 'Video'}
-          {mode === 'template' && 'Spezial'}
-        </h1>
+        <div className="flex items-center gap-2">
+          <div
+            className="flex h-7 w-7 items-center justify-center rounded-lg"
+            style={{ backgroundColor: `${theme.accent}20`, color: theme.accent }}
+          >
+            {theme.icon}
+          </div>
+          <h1 className="text-lg font-semibold" style={{ color: theme.accent }}>
+            {theme.label}
+          </h1>
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -310,47 +374,73 @@ export default function CreatePage() {
               </div>
             )}
 
-            {/* Text mode - REDESIGNED journal/diary feel */}
+            {/* Text mode - Atmospheric blue/indigo journal */}
             {mode === 'text' && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="space-y-5"
+                className="relative space-y-5"
               >
-                {/* Mood selector */}
+                {/* Decorative background quote mark */}
+                <div
+                  className="pointer-events-none absolute -right-4 -top-8 select-none text-[180px] font-serif leading-none"
+                  style={{ color: 'rgba(0,212,255,0.04)' }}
+                >
+                  &ldquo;
+                </div>
+
+                {/* Mood selector - larger visual cards with gradient backgrounds */}
                 <div>
-                  <p className="mb-2.5 text-xs font-medium uppercase tracking-wider text-shake-text-muted/60">Stimmung</p>
+                  <p className="mb-2.5 text-xs font-medium uppercase tracking-wider" style={{ color: 'rgba(0,212,255,0.5)' }}>Stimmung</p>
                   <div className="flex gap-2">
-                    {MOODS.map((mood, i) => (
-                      <motion.button
-                        key={mood.label}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setSelectedMood(selectedMood === i ? null : i)}
-                        className={cn(
-                          'flex flex-1 flex-col items-center gap-1 rounded-xl py-2.5 transition-all',
-                          selectedMood === i
-                            ? `bg-${mood.color}/20 border border-${mood.color}/40`
-                            : 'border border-white/5 bg-white/5'
-                        )}
-                        style={selectedMood === i ? {
-                          borderColor: `var(--color-${mood.color})`,
-                          backgroundColor: `color-mix(in srgb, var(--color-${mood.color}) 15%, transparent)`,
-                        } : undefined}
-                      >
-                        <span className="text-xl">{mood.emoji}</span>
-                        <span className={cn(
-                          'text-[9px] font-medium',
-                          selectedMood === i ? 'text-shake-text' : 'text-shake-text-muted/60'
-                        )}>
-                          {mood.label}
-                        </span>
-                      </motion.button>
-                    ))}
+                    {MOODS.map((mood, i) => {
+                      const moodGradients = [
+                        'linear-gradient(135deg, rgba(255,45,120,0.25), rgba(255,45,120,0.05))',
+                        'linear-gradient(135deg, rgba(0,150,255,0.25), rgba(0,100,200,0.05))',
+                        'linear-gradient(135deg, rgba(57,255,20,0.2), rgba(57,200,20,0.05))',
+                        'linear-gradient(135deg, rgba(180,77,255,0.25), rgba(140,50,200,0.05))',
+                        'linear-gradient(135deg, rgba(255,140,66,0.25), rgba(200,100,40,0.05))',
+                      ]
+                      return (
+                        <motion.button
+                          key={mood.label}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => setSelectedMood(selectedMood === i ? null : i)}
+                          className={cn(
+                            'flex flex-1 flex-col items-center gap-1.5 rounded-2xl py-3 transition-all',
+                            selectedMood === i
+                              ? 'ring-1 scale-105'
+                              : 'border border-white/5'
+                          )}
+                          style={{
+                            background: selectedMood === i ? moodGradients[i] : 'rgba(255,255,255,0.03)',
+                            ...(selectedMood === i ? {
+                              borderColor: `var(--color-${mood.color})`,
+                              ringColor: `var(--color-${mood.color})`,
+                              boxShadow: `0 0 20px ${moodGradients[i]}`,
+                            } : {}),
+                          }}
+                        >
+                          <span className="text-2xl">{mood.emoji}</span>
+                          <span className={cn(
+                            'text-[9px] font-medium',
+                            selectedMood === i ? 'text-shake-text' : 'text-shake-text-muted/60'
+                          )}>
+                            {mood.label}
+                          </span>
+                        </motion.button>
+                      )
+                    })}
                   </div>
                 </div>
 
-                {/* Journal textarea area */}
+                {/* Journal textarea area - dark surface with depth */}
                 <div className="relative">
+                  {/* Subtle inner glow */}
+                  <div
+                    className="absolute -inset-1 rounded-3xl opacity-40 blur-xl"
+                    style={{ background: 'radial-gradient(ellipse at center, rgba(0,100,200,0.15), transparent 70%)' }}
+                  />
                   {/* Paper texture background */}
                   <div
                     className="absolute inset-0 rounded-2xl opacity-[0.03]"
@@ -363,14 +453,18 @@ export default function CreatePage() {
                     onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
                     placeholder="Es war diese eine Nacht im Shake..."
                     className={cn(
-                      'relative h-80 w-full resize-none rounded-2xl border-2 bg-shake-dark/80 p-5 pt-6 text-lg leading-8 text-shake-text placeholder:text-shake-text-muted/30 focus:outline-none transition-colors',
+                      'relative h-80 w-full resize-none rounded-2xl border-2 p-5 pt-6 text-lg leading-8 text-shake-text placeholder:text-shake-text-muted/30 focus:outline-none transition-colors',
                       selectedMood !== null
                         ? 'focus:ring-1'
-                        : 'border-white/10 focus:border-shake-neon-pink/40'
+                        : 'border-blue-900/30 focus:border-blue-400/30'
                     )}
-                    style={selectedMood !== null ? {
-                      borderColor: `color-mix(in srgb, var(--color-${moodColor}) 30%, transparent)`,
-                    } : undefined}
+                    style={{
+                      backgroundColor: 'rgba(5,10,25,0.8)',
+                      boxShadow: 'inset 0 2px 20px rgba(0,0,0,0.3), 0 0 40px rgba(0,50,100,0.05)',
+                      ...(selectedMood !== null ? {
+                        borderColor: `color-mix(in srgb, var(--color-${moodColor}) 30%, transparent)`,
+                      } : {}),
+                    }}
                     autoFocus
                   />
 
@@ -386,7 +480,7 @@ export default function CreatePage() {
                       <circle
                         cx="20" cy="20" r="18"
                         fill="none"
-                        stroke={charProgress > 0.9 ? '#ff8c42' : charProgress > 0 ? 'var(--color-shake-neon-pink)' : 'transparent'}
+                        stroke={charProgress > 0.9 ? '#ff8c42' : charProgress > 0 ? '#00d4ff' : 'transparent'}
                         strokeWidth="2.5"
                         strokeDasharray={circumference}
                         strokeDashoffset={circumference * (1 - charProgress)}
@@ -405,7 +499,7 @@ export default function CreatePage() {
                   </div>
                 </div>
 
-                <p className="text-center text-[11px] text-shake-text-muted/40 italic">
+                <p className="text-center text-[11px] italic" style={{ color: 'rgba(0,212,255,0.3)' }}>
                   Was macht d&auml;s Shake f&uuml;r dich besonders?
                 </p>
               </motion.div>
@@ -451,7 +545,7 @@ export default function CreatePage() {
           </motion.div>
         )}
 
-        {/* Details step - REDESIGNED with avatar picker + preview */}
+        {/* Details step - Warm atmospheric design */}
         {step === 'details' && (
           <motion.div
             key="details"
@@ -460,21 +554,29 @@ export default function CreatePage() {
             exit={{ opacity: 0, x: -20 }}
             className="mx-auto max-w-lg space-y-5"
           >
-            {/* Avatar picker */}
+            {/* Avatar picker - more visual with gradient hover */}
             <div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-shake-text-muted/60">Dein Avatar</p>
-              <div className="flex gap-2 justify-center">
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider" style={{ color: 'rgba(255,45,120,0.5)' }}>Dein Avatar</p>
+              <div className="flex gap-2.5 justify-center">
                 {AVATARS.map((av, i) => (
                   <motion.button
                     key={av}
                     whileTap={{ scale: 0.85 }}
                     onClick={() => setSelectedAvatar(i)}
                     className={cn(
-                      'flex h-11 w-11 items-center justify-center rounded-full text-xl transition-all',
+                      'flex h-12 w-12 items-center justify-center rounded-full text-xl transition-all',
                       selectedAvatar === i
-                        ? 'bg-shake-neon-pink/20 ring-2 ring-shake-neon-pink scale-110'
-                        : 'bg-white/5 hover:bg-white/10'
+                        ? 'scale-110'
+                        : 'hover:bg-white/10'
                     )}
+                    style={selectedAvatar === i ? {
+                      background: 'linear-gradient(135deg, rgba(255,45,120,0.25), rgba(180,77,255,0.2))',
+                      boxShadow: '0 0 20px rgba(255,45,120,0.2), inset 0 0 15px rgba(255,45,120,0.1)',
+                      border: '2px solid rgba(255,45,120,0.5)',
+                    } : {
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                    }}
                   >
                     {av}
                   </motion.button>
@@ -482,7 +584,7 @@ export default function CreatePage() {
               </div>
             </div>
 
-            {/* Name + Instagram */}
+            {/* Name + Instagram - styled inputs */}
             <div>
               <label className="mb-1 block text-sm text-shake-text-muted">
                 Dein Name (optional &ndash; bleib gern anonym)
@@ -491,7 +593,8 @@ export default function CreatePage() {
                 value={authorName}
                 onChange={(e) => setAuthorName(e.target.value)}
                 placeholder="Anonym"
-                className="w-full rounded-xl border border-shake-light/30 bg-shake-dark px-4 py-3 text-shake-text placeholder:text-shake-text-muted/50 focus:border-shake-neon-pink/50 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-shake-text placeholder:text-shake-text-muted/50 focus:border-shake-neon-pink/40 focus:outline-none"
+                style={{ boxShadow: 'inset 0 1px 10px rgba(0,0,0,0.2)' }}
               />
             </div>
 
@@ -500,7 +603,7 @@ export default function CreatePage() {
                 <AtSign className="h-4 w-4" />
                 Instagram Handle (optional)
               </label>
-              <div className="flex items-center rounded-xl border border-shake-light/30 bg-shake-dark">
+              <div className="flex items-center rounded-xl border border-white/10 bg-white/5" style={{ boxShadow: 'inset 0 1px 10px rgba(0,0,0,0.2)' }}>
                 <span className="pl-4 text-shake-text-muted">@</span>
                 <input
                   value={instagramHandle}
@@ -511,27 +614,42 @@ export default function CreatePage() {
               </div>
             </div>
 
-            {/* Preview card */}
+            {/* Preview card with depth */}
             <div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-shake-text-muted/60">Vorschau</p>
-              <div className="glass-card rounded-2xl p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-shake-neon-pink to-shake-neon-purple text-lg">
-                    {AVATARS[selectedAvatar]}
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold text-shake-text">
-                      {authorName.trim() || 'Anonym'}
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider" style={{ color: 'rgba(255,45,120,0.5)' }}>Vorschau</p>
+              <div className="relative">
+                {/* Glow behind card */}
+                <div
+                  className="absolute -inset-2 rounded-3xl opacity-30 blur-xl"
+                  style={{ background: 'radial-gradient(ellipse at center, rgba(255,45,120,0.15), rgba(180,77,255,0.1), transparent 70%)' }}
+                />
+                <div
+                  className="relative rounded-2xl p-4"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+                  }}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-shake-neon-pink to-shake-neon-purple text-lg">
+                      {AVATARS[selectedAvatar]}
                     </div>
-                    {instagramHandle.trim() && (
-                      <div className="text-xs text-shake-text-muted">@{instagramHandle}</div>
-                    )}
+                    <div>
+                      <div className="text-sm font-semibold text-shake-text">
+                        {authorName.trim() || 'Anonym'}
+                      </div>
+                      {instagramHandle.trim() && (
+                        <div className="text-xs text-shake-text-muted">@{instagramHandle}</div>
+                      )}
+                    </div>
+                    <div className="ml-auto text-[10px] text-shake-text-muted/50">gerade eben</div>
                   </div>
-                  <div className="ml-auto text-[10px] text-shake-text-muted/50">gerade eben</div>
+                  <p className="text-sm text-shake-text/80 line-clamp-3">
+                    {text.trim() || (templateData ? `[${templateData.type}]` : mode === 'visual' ? '[Visual Story]' : recordedBlob ? (recordedType === 'audio' ? '[Sprachnachricht]' : '[Video]') : '...')}
+                  </p>
                 </div>
-                <p className="text-sm text-shake-text/80 line-clamp-3">
-                  {text.trim() || (templateData ? `[${templateData.type}]` : mode === 'visual' ? '[Visual Story]' : recordedBlob ? (recordedType === 'audio' ? '[Sprachnachricht]' : '[Video]') : '...')}
-                </p>
               </div>
             </div>
 
@@ -603,6 +721,7 @@ export default function CreatePage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   )
 }

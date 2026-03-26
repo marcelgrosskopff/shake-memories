@@ -204,18 +204,26 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* === CANVAS (9:16, larger) === */}
-      <div
-        ref={canvasRef}
-        className="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-2xl border border-white/10"
-        style={{
-          background: backgroundImage ? `url(${backgroundImage}) center/cover` : currentBg,
-          filter: FILTERS[selectedFilter].value !== 'none' ? FILTERS[selectedFilter].value : undefined,
-        }}
-        onPointerMove={handlePointerMove}
-        onPointerUp={() => setDragging(null)}
-        onPointerLeave={() => setDragging(null)}
-      >
+      {/* === CANVAS (9:16, larger) with atmospheric glow === */}
+      <div className="relative">
+        {/* Subtle glow behind canvas */}
+        <div
+          className="absolute -inset-3 rounded-3xl opacity-50 blur-2xl"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(255,45,120,0.12), rgba(180,77,255,0.08), transparent 70%)' }}
+        />
+        <div
+          ref={canvasRef}
+          className="relative mx-auto aspect-[9/16] w-full overflow-hidden rounded-2xl"
+          style={{
+            background: backgroundImage ? `url(${backgroundImage}) center/cover` : currentBg,
+            filter: FILTERS[selectedFilter].value !== 'none' ? FILTERS[selectedFilter].value : undefined,
+            border: '1px solid rgba(255,45,120,0.15)',
+            boxShadow: '0 0 30px rgba(255,45,120,0.08), 0 8px 40px rgba(0,0,0,0.4)',
+          }}
+          onPointerMove={handlePointerMove}
+          onPointerUp={() => setDragging(null)}
+          onPointerLeave={() => setDragging(null)}
+        >
         {/* Text overlays */}
         {textOverlays.map(overlay => (
           <div
@@ -284,6 +292,7 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
           <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           <ImagePlus className="h-5 w-5" />
         </label>
+        </div>
       </div>
 
       {/* === FILTER STRIP === */}
@@ -316,8 +325,14 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
         ))}
       </div>
 
-      {/* === TOOL BAR (Instagram-like circular buttons with labels) === */}
-      <div className="flex justify-center gap-5">
+      {/* === TOOL BAR (circular buttons with pink/purple accent) === */}
+      <div
+        className="flex justify-center gap-5 rounded-2xl py-3 px-4"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,45,120,0.04), rgba(180,77,255,0.03))',
+          border: '1px solid rgba(255,255,255,0.04)',
+        }}
+      >
         {[
           { tool: 'text' as const, icon: Type, label: 'Text', action: () => addText() },
           { tool: 'stickers' as const, icon: Sticker, label: 'Sticker', action: () => setActiveTool(activeTool === 'stickers' ? null : 'stickers') },
@@ -332,12 +347,17 @@ export function CreativeEditor({ onStateChange }: CreativeEditorProps) {
               activeTool === item.tool ? 'text-shake-neon-pink' : 'text-shake-text-muted hover:text-shake-text'
             )}
           >
-            <div className={cn(
-              'flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all',
-              activeTool === item.tool
-                ? 'border-shake-neon-pink bg-shake-neon-pink/10'
-                : 'border-white/15 bg-white/5'
-            )}>
+            <div
+              className="flex h-12 w-12 items-center justify-center rounded-full transition-all"
+              style={activeTool === item.tool ? {
+                border: '2px solid rgba(255,45,120,0.6)',
+                background: 'rgba(255,45,120,0.1)',
+                boxShadow: '0 0 15px rgba(255,45,120,0.15)',
+              } : {
+                border: '2px solid rgba(255,255,255,0.1)',
+                background: 'rgba(255,255,255,0.03)',
+              }}
+            >
               <item.icon className="h-5 w-5" />
             </div>
             <span className="text-[10px] font-medium">{item.label}</span>
