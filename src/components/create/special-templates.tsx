@@ -155,35 +155,78 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
 
   const hasContent = images.some(Boolean) || Object.values(answers).some((v) => v.trim()) || selectedSong
 
-  // === Template chooser ===
+  // === Template chooser — graphic story covers ===
   if (!selected) {
     return (
-      <div className="space-y-2">
-        {TEMPLATES.map((tmpl, i) => (
-          <motion.button
-            key={tmpl.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              setSelected(tmpl.id)
-              setImages(new Array(tmpl.slots.length).fill(null))
-              setFiles(new Array(tmpl.slots.length).fill(null))
-            }}
-            className={cn(
-              'flex w-full items-center gap-3 rounded-2xl border border-white/5 p-3.5 text-left transition-colors',
-              `bg-gradient-to-r ${tmpl.gradient}`
-            )}
-          >
-            <span className="text-3xl">{tmpl.emoji}</span>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-bold text-shake-text">{tmpl.name}</div>
-              <div className="text-[11px] text-shake-text-muted truncate">{tmpl.description}</div>
-            </div>
-            <span className="text-shake-text-muted text-lg">&rsaquo;</span>
-          </motion.button>
-        ))}
+      <div className="space-y-3">
+        {/* 2x2 grid for first 4, then remaining as list */}
+        <div className="grid grid-cols-2 gap-3">
+          {TEMPLATES.slice(0, 4).map((tmpl, i) => (
+            <motion.button
+              key={tmpl.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                setSelected(tmpl.id)
+                setImages(new Array(tmpl.slots.length).fill(null))
+                setFiles(new Array(tmpl.slots.length).fill(null))
+              }}
+              className="relative overflow-hidden rounded-2xl"
+              style={{ height: '160px' }}
+            >
+              <div className="absolute inset-0" style={{ background: tmpl.bgStyle }} />
+              <div
+                className="absolute inset-0"
+                style={{ background: `radial-gradient(circle at 70% 30%, ${tmpl.accentColor}25, transparent 60%)` }}
+              />
+              <div className="relative flex h-full flex-col justify-between p-3.5">
+                <div className="text-[9px] uppercase tracking-[0.15em]" style={{ color: `${tmpl.accentColor}80` }}>
+                  {tmpl.layout === 'split' ? 'Vergleich' : tmpl.layout === 'song' ? 'Musik' : 'Erinnerung'}
+                </div>
+                <div>
+                  <div className="text-4xl mb-1.5">{tmpl.emoji}</div>
+                  <div className="text-sm font-bold text-white leading-tight">{tmpl.name}</div>
+                  <div className="mt-0.5 text-[10px] text-white/40 leading-snug">{tmpl.description}</div>
+                </div>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Remaining templates as wider cards */}
+        <div className="grid grid-cols-2 gap-3">
+          {TEMPLATES.slice(4).map((tmpl, i) => (
+            <motion.button
+              key={tmpl.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: (i + 4) * 0.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                setSelected(tmpl.id)
+                setImages(new Array(tmpl.slots.length).fill(null))
+                setFiles(new Array(tmpl.slots.length).fill(null))
+              }}
+              className="relative overflow-hidden rounded-2xl"
+              style={{ height: '120px' }}
+            >
+              <div className="absolute inset-0" style={{ background: tmpl.bgStyle }} />
+              <div
+                className="absolute inset-0"
+                style={{ background: `radial-gradient(circle at 80% 20%, ${tmpl.accentColor}20, transparent 60%)` }}
+              />
+              <div className="relative flex h-full flex-col justify-between p-3.5">
+                <div className="text-3xl">{tmpl.emoji}</div>
+                <div>
+                  <div className="text-sm font-bold text-white">{tmpl.name}</div>
+                  <div className="text-[10px] text-white/35">{tmpl.description}</div>
+                </div>
+              </div>
+            </motion.button>
+          ))}
+        </div>
       </div>
     )
   }

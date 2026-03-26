@@ -101,67 +101,163 @@ export default function CreatePage() {
   const charProgress = text.length / MAX_CHARS
   const circumference = 2 * Math.PI * 18
 
-  // --- Mode chooser ---
+  // --- Mode chooser (graphic design system) ---
   if (mode === 'choose' && step === 'create') {
     return (
-      <div className="min-h-dvh bg-shake-black px-4 pt-6 pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mx-auto max-w-lg"
-        >
-          <h1 className="mb-1 text-center text-2xl font-bold">
-            Dini <span className="gradient-text">Story</span>
-          </h1>
-          <p className="mb-5 text-center text-xs text-shake-text-muted">
-            Wie wottsch dini Shake-Erinnerung teila?
-          </p>
+      <div className="min-h-dvh bg-shake-black pb-24">
+        {/* Full-bleed scrollable mode cards */}
+        <div className="space-y-3 px-4 pt-4">
+          {/* Header */}
+          <div className="mb-2 flex items-center justify-between">
+            <h1 className="text-xl font-bold">Erzähla</h1>
+            <span className="text-xs text-shake-text-muted">Wähle din Stil</span>
+          </div>
 
-          {/* === SPEZIAL-TEMPLATES === */}
+          {/* === SPEZIAL-TEMPLATES — full visual card === */}
           <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setMode('template')}
-            className="mb-4 w-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-r from-shake-gold/20 via-shake-warm/10 to-shake-neon-pink/20 p-4"
+            className="relative w-full overflow-hidden rounded-3xl"
+            style={{ height: '180px' }}
           >
-            <div className="flex items-center gap-4">
-              <div className="flex gap-1 text-3xl">
-                <span>{'\u{1F4F8}'}</span>
-              </div>
-              <div className="flex-1 text-left">
-                <div className="font-bold text-shake-text">Spezial-Templates</div>
-                <div className="text-xs text-shake-text-muted">
-                  Damals vs. H&uuml;t &bull; Love Story &bull; Beichte &bull; und meh
+            {/* Atmospheric background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-900/80 via-orange-900/60 to-pink-900/80" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,215,0,0.3),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(255,45,120,0.2),transparent_60%)]" />
+            {/* Content */}
+            <div className="relative flex h-full flex-col justify-between p-5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-amber-300/70 mb-1">Spezial</div>
+                  <div className="text-2xl font-bold text-white leading-tight">Story<br/>Templates</div>
+                </div>
+                <div className="flex -space-x-1 text-2xl">
+                  <span className="drop-shadow-lg">📸</span>
+                  <span className="drop-shadow-lg">❤️</span>
+                  <span className="drop-shadow-lg">🤫</span>
                 </div>
               </div>
-              <div className="text-shake-text-muted">&rsaquo;</div>
+              <div className="flex items-end justify-between">
+                <div className="flex gap-2">
+                  {['Damals vs Hüt', 'Love Story', 'Beichte', '+5'].map((tag) => (
+                    <span key={tag} className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] text-white/70 backdrop-blur-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.button>
 
-          {/* === OTHER MODES === */}
+          {/* === VISUAL STORY — atmospheric card === */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setMode('visual')}
+            className="relative w-full overflow-hidden rounded-3xl"
+            style={{ height: '140px' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-900/90 via-purple-900/80 to-indigo-900/90" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,45,120,0.4),transparent_50%)]" />
+            <div className="relative flex h-full items-center justify-between p-5">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-pink-300/60 mb-1">Gestalten</div>
+                <div className="text-2xl font-bold text-white">Visual Story</div>
+                <div className="mt-1 text-xs text-white/50">Filter, Sticker, Text, Hintergrund</div>
+              </div>
+              <div className="flex flex-col items-center gap-1 opacity-30">
+                <div className="h-16 w-12 rounded-lg border-2 border-white/40 bg-gradient-to-b from-pink-500/20 to-purple-500/20" />
+                <div className="h-1 w-6 rounded-full bg-white/30" />
+              </div>
+            </div>
+          </motion.button>
+
+          {/* === TEXT + AUDIO row === */}
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { mode: 'visual' as const, icon: Brush, title: 'Visual', desc: 'Filter & Sticker', color: 'from-shake-neon-pink to-shake-neon-purple', emoji: '\u{1F3A8}' },
-              { mode: 'text' as const, icon: Type, title: 'Text', desc: 'Gschicht schrieba', color: 'from-shake-neon-blue to-shake-neon-purple', emoji: '\u{270D}\u{FE0F}' },
-              { mode: 'voice' as const, icon: Mic, title: 'Audio', desc: 'Sprachnachricht', color: 'from-shake-neon-green to-shake-neon-blue', emoji: '\u{1F399}\u{FE0F}' },
-              { mode: 'video' as const, icon: Video, title: 'Video', desc: 'Aufnehmen / hochladen', color: 'from-shake-warm to-shake-neon-pink', emoji: '\u{1F3AC}' },
-            ].map((item) => (
-              <motion.button
-                key={item.mode}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setMode(item.mode)}
-                className="glass-card flex items-center gap-3 rounded-2xl p-3.5 text-left"
-              >
-                <div className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br', item.color)}>
-                  <item.icon className="h-5 w-5 text-white" />
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setMode('text')}
+              className="relative overflow-hidden rounded-3xl"
+              style={{ height: '130px' }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-900/80 to-indigo-950/90" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_80%,rgba(0,212,255,0.15),transparent_60%)]" />
+              <div className="relative flex h-full flex-col justify-between p-4">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-blue-300/50">Schreiben</div>
+                <div>
+                  <div className="text-lg font-bold text-white">Text</div>
+                  <div className="mt-0.5 text-[11px] text-white/40">Dini Gschicht</div>
                 </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-shake-text">{item.title} {item.emoji}</div>
-                  <div className="text-[11px] text-shake-text-muted truncate">{item.desc}</div>
+                {/* Decorative lines like a notebook */}
+                <div className="absolute right-3 top-3 flex flex-col gap-1.5 opacity-15">
+                  <div className="h-px w-10 bg-white" />
+                  <div className="h-px w-8 bg-white" />
+                  <div className="h-px w-12 bg-white" />
+                  <div className="h-px w-6 bg-white" />
                 </div>
-              </motion.button>
-            ))}
+              </div>
+            </motion.button>
+
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setMode('voice')}
+              className="relative overflow-hidden rounded-3xl"
+              style={{ height: '130px' }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/80 to-teal-950/90" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_80%,rgba(57,255,20,0.1),transparent_60%)]" />
+              <div className="relative flex h-full flex-col justify-between p-4">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-emerald-300/50">Aufnehmen</div>
+                <div>
+                  <div className="text-lg font-bold text-white">Audio</div>
+                  <div className="mt-0.5 text-[11px] text-white/40">Sprach&shy;nachricht</div>
+                </div>
+                {/* Decorative waveform */}
+                <div className="absolute right-3 top-3 flex items-end gap-[2px] opacity-20">
+                  {[3, 8, 5, 12, 7, 14, 4, 10, 6, 11, 3, 8].map((h, i) => (
+                    <div key={i} className="w-[3px] rounded-full bg-white" style={{ height: `${h}px` }} />
+                  ))}
+                </div>
+              </div>
+            </motion.button>
           </div>
-        </motion.div>
+
+          {/* === VIDEO — wide card === */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setMode('video')}
+            className="relative w-full overflow-hidden rounded-3xl"
+            style={{ height: '110px' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-900/80 via-red-900/70 to-pink-900/80" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_50%,rgba(255,140,66,0.25),transparent_50%)]" />
+            <div className="relative flex h-full items-center justify-between p-5">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-orange-300/60 mb-1">Aufnehmen</div>
+                <div className="text-xl font-bold text-white">Video</div>
+                <div className="mt-0.5 text-xs text-white/40">Kamera oder Upload</div>
+              </div>
+              {/* Decorative play button */}
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/20 bg-white/5">
+                <div className="ml-1 h-0 w-0 border-l-[14px] border-t-[9px] border-b-[9px] border-l-white/40 border-t-transparent border-b-transparent" />
+              </div>
+            </div>
+          </motion.button>
+        </div>
       </div>
     )
   }
