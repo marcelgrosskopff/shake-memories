@@ -21,7 +21,7 @@ export function StoryCard({ story }: { story: Story }) {
   const reactionsCount = story.reactions_count || {}
 
   return (
-    <div className="glass-card gradient-border card-depth overflow-hidden rounded-2xl">
+    <div className="glass-card overflow-hidden rounded-2xl">
       {/* Header */}
       <div className="flex items-center gap-3 p-4 pb-2">
         <div className="avatar-ring">
@@ -70,7 +70,7 @@ export function StoryCard({ story }: { story: Story }) {
               <img
                 src={url}
                 alt=""
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                className="h-full w-full object-cover"
                 loading="lazy"
               />
               {i === 3 && story.media_urls.length > 4 && (

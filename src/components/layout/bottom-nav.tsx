@@ -20,7 +20,7 @@ export function BottomNav() {
       <div className="absolute inset-0 bg-shake-black/70 backdrop-blur-2xl border-t border-white/[0.06]" />
 
       {/* Subtle top glow */}
-      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-shake-neon-pink/30 to-transparent" />
+      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="relative mx-auto flex max-w-lg items-center justify-around">
         {navItems.map((item) => {
@@ -39,8 +39,8 @@ export function BottomNav() {
                   className={cn(
                     'flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-shake-neon-pink to-shake-neon-purple shadow-lg transition-all',
                     isActive
-                      ? 'shadow-[0_0_20px_rgba(255,45,120,0.5),0_0_40px_rgba(255,45,120,0.2)]'
-                      : 'shadow-[0_0_12px_rgba(255,45,120,0.3)]'
+                      ? 'shadow-[0_0_12px_rgba(255,45,120,0.4)]'
+                      : 'shadow-[0_0_6px_rgba(255,45,120,0.2)]'
                   )}
                 >
                   <Icon className="h-7 w-7 text-white" />

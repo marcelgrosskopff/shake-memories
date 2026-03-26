@@ -3,9 +3,9 @@
 import { cn } from '@/lib/utils'
 
 const sizes = {
-  sm: { ball: 48, viewBox: 80 },
-  md: { ball: 80, viewBox: 140 },
-  lg: { ball: 120, viewBox: 200 },
+  sm: { ball: 48, viewBox: 64 },
+  md: { ball: 80, viewBox: 100 },
+  lg: { ball: 100, viewBox: 130 },
 }
 
 export function DiscoBall({
@@ -39,7 +39,7 @@ export function DiscoBall({
 
           {/* Highlight */}
           <radialGradient id={`highlight-${size}`} cx="30%" cy="25%" r="30%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,0.7)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </radialGradient>
 
@@ -49,53 +49,6 @@ export function DiscoBall({
           </clipPath>
         </defs>
 
-        {/* Light reflection particles shooting out */}
-        {Array.from({ length: 12 }).map((_, i) => {
-          const angle = (i * 30) * Math.PI / 180
-          const startX = cx + Math.cos(angle) * (r + 2)
-          const startY = cy + Math.sin(angle) * (r + 2)
-          const endX = cx + Math.cos(angle) * (r + 15 + (i % 3) * 8)
-          const endY = cy + Math.sin(angle) * (r + 15 + (i % 3) * 8)
-          const colors = ['#ff2d78', '#00d4ff', '#ffd700', '#b44dff']
-          return (
-            <line
-              key={`ray-${i}`}
-              x1={startX}
-              y1={startY}
-              x2={endX}
-              y2={endY}
-              stroke={colors[i % colors.length]}
-              strokeWidth={1}
-              opacity={0.5}
-              className="disco-ray"
-              style={{
-                animationDelay: `${i * 0.25}s`,
-                animationDuration: `${2 + (i % 3) * 0.5}s`,
-              }}
-            />
-          )
-        })}
-
-        {/* Sparkle dots around the ball */}
-        {Array.from({ length: 8 }).map((_, i) => {
-          const angle = (i * 45 + 15) * Math.PI / 180
-          const dist = r + 10 + (i % 2) * 12
-          const px = cx + Math.cos(angle) * dist
-          const py = cy + Math.sin(angle) * dist
-          const colors = ['#ff2d78', '#00d4ff', '#ffd700', '#b44dff']
-          return (
-            <circle
-              key={`sparkle-${i}`}
-              cx={px}
-              cy={py}
-              r={1.5}
-              fill={colors[i % colors.length]}
-              className="disco-sparkle"
-              style={{ animationDelay: `${i * 0.3}s` }}
-            />
-          )
-        })}
-
         {/* Main ball body */}
         <circle
           cx={cx}
@@ -104,7 +57,7 @@ export function DiscoBall({
           fill={`url(#ballGrad-${size})`}
         />
 
-        {/* Facet grid - rotating group */}
+        {/* Facet grid */}
         <g clipPath={`url(#ballClip-${size})`} className="disco-facets">
           {/* Horizontal lines */}
           {Array.from({ length: 9 }).map((_, i) => {
@@ -116,12 +69,12 @@ export function DiscoBall({
                 y1={y}
                 x2={cx + r}
                 y2={y}
-                stroke="rgba(255,255,255,0.15)"
+                stroke="rgba(255,255,255,0.12)"
                 strokeWidth={0.5}
               />
             )
           })}
-          {/* Vertical lines (curved look via multiple) */}
+          {/* Vertical lines */}
           {Array.from({ length: 11 }).map((_, i) => {
             const x = cx - r + (i + 1) * (ball / 12)
             return (
@@ -131,27 +84,8 @@ export function DiscoBall({
                 y1={cy - r}
                 x2={x}
                 y2={cy + r}
-                stroke="rgba(255,255,255,0.12)"
+                stroke="rgba(255,255,255,0.09)"
                 strokeWidth={0.5}
-              />
-            )
-          })}
-
-          {/* Shimmer facets that move */}
-          {Array.from({ length: 6 }).map((_, i) => {
-            const fx = cx - r / 2 + (i % 3) * (r / 2)
-            const fy = cy - r / 2 + Math.floor(i / 3) * (r / 2)
-            return (
-              <rect
-                key={`facet-${i}`}
-                x={fx}
-                y={fy}
-                width={r / 3}
-                height={r / 4}
-                fill="rgba(255,255,255,0.2)"
-                rx={1}
-                className="disco-facet-shine"
-                style={{ animationDelay: `${i * 0.5}s` }}
               />
             )
           })}
@@ -163,7 +97,7 @@ export function DiscoBall({
           cy={cy}
           r={r}
           fill={`url(#highlight-${size})`}
-          opacity={0.6}
+          opacity={0.5}
         />
 
         {/* Hanging wire */}
@@ -172,51 +106,24 @@ export function DiscoBall({
           y1={0}
           x2={cx}
           y2={cy - r}
-          stroke="rgba(255,255,255,0.3)"
+          stroke="rgba(255,255,255,0.2)"
           strokeWidth={1}
         />
       </svg>
 
       <style jsx>{`
         .disco-ball-svg {
-          filter: drop-shadow(0 0 12px rgba(255,45,120,0.3)) drop-shadow(0 0 24px rgba(0,212,255,0.2));
+          filter: drop-shadow(0 0 8px rgba(255,255,255,0.1));
         }
 
         .disco-facets {
-          animation: disco-rotate 20s linear infinite;
+          animation: disco-rotate 30s linear infinite;
           transform-origin: ${cx}px ${cy}px;
         }
 
         @keyframes disco-rotate {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
-        }
-
-        .disco-ray {
-          animation: ray-pulse 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes ray-pulse {
-          0% { opacity: 0.2; stroke-width: 0.5; }
-          100% { opacity: 0.7; stroke-width: 1.5; }
-        }
-
-        .disco-sparkle {
-          animation: sparkle-blink 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes sparkle-blink {
-          0% { opacity: 0.3; r: 1; }
-          100% { opacity: 1; r: 2.5; }
-        }
-
-        .disco-facet-shine {
-          animation: facet-shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes facet-shimmer {
-          0%, 100% { opacity: 0.05; }
-          50% { opacity: 0.35; }
         }
       `}</style>
     </div>

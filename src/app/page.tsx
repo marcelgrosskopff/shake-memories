@@ -6,33 +6,27 @@ import { PlusCircle, Sparkles, ChevronDown } from 'lucide-react'
 import { CLUB_TIMELINE } from '@/types'
 import { TimelineItem } from '@/components/ui/timeline-item'
 import { DiscoBall } from '@/components/ui/disco-ball'
-import { Particles } from '@/components/ui/particles'
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-dvh overflow-hidden">
-      {/* Background particles */}
-      <Particles />
-
+    <div className="relative min-h-dvh">
       {/* Hero Section */}
-      <section className="light-rays relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
-        {/* Multiple layered background gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-shake-neon-pink/8 via-shake-black to-shake-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,45,120,0.12),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_60%,rgba(0,212,255,0.06),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(180,77,255,0.06),transparent_50%)]" />
+      <section className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
+        {/* Single subtle radial gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-shake-neon-pink/5 via-shake-black to-shake-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,45,120,0.08),transparent_60%)]" />
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="relative z-10"
         >
-          {/* Animated disco ball SVG */}
+          {/* Disco ball */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, type: 'spring' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             className="mx-auto mb-4"
           >
             <DiscoBall size="lg" />
@@ -44,7 +38,7 @@ export default function HomePage() {
             transition={{ delay: 0.4 }}
             className="mb-4 text-6xl font-bold tracking-tight sm:text-8xl"
           >
-            <span className="gradient-text text-flicker">Shake</span>
+            <span className="gradient-text">Shake</span>
             <br />
             <span className="text-shake-text">Memories</span>
           </motion.h1>
@@ -55,7 +49,7 @@ export default function HomePage() {
             transition={{ delay: 0.6 }}
             className="mx-auto mb-2 max-w-md text-lg text-shake-text-muted"
           >
-            35 Johr Clubkultur in Rothis
+            35 Jahre Clubkultur in Rothis
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}
@@ -63,7 +57,7 @@ export default function HomePage() {
             transition={{ delay: 0.7 }}
             className="mx-auto mb-10 max-w-sm text-sm text-shake-text-muted/70"
           >
-            Einfach anders. Sit 1989.
+            Einfach anders. Seit 1989.
           </motion.p>
 
           <motion.div
@@ -74,14 +68,14 @@ export default function HomePage() {
           >
             <Link
               href="/create"
-              className="pulse-neon shine-sweep inline-flex items-center justify-center gap-2 rounded-full bg-shake-neon-pink px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-shake-neon-pink/90 hover:scale-105"
+              className="pulse-neon inline-flex items-center justify-center gap-2 rounded-full bg-shake-neon-pink px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-shake-neon-pink/90"
             >
               <PlusCircle className="h-5 w-5" />
               Dini Gschicht
             </Link>
             <Link
               href="/feed"
-              className="glass inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-lg font-semibold text-shake-text transition-all hover:border-shake-neon-blue/50 hover:text-shake-neon-blue hover:scale-105"
+              className="glass inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-lg font-semibold text-shake-text transition-colors hover:border-white/20"
             >
               <Sparkles className="h-5 w-5" />
               Stories lesa
@@ -110,7 +104,7 @@ export default function HomePage() {
       {/* Timeline Section */}
       <section className="relative px-6 py-20">
         <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2">
-          <div className="h-full w-full bg-gradient-to-b from-shake-neon-pink/60 via-shake-neon-blue/40 to-transparent glow-line" />
+          <div className="h-full w-full bg-gradient-to-b from-shake-neon-pink/30 via-white/5 to-transparent" />
         </div>
 
         <motion.h2
@@ -119,7 +113,7 @@ export default function HomePage() {
           viewport={{ once: true }}
           className="mb-16 text-center text-4xl font-bold"
         >
-          D&apos; <span className="gradient-text">Timeline</span>
+          Die <span className="gradient-text">Timeline</span>
         </motion.h2>
 
         <div className="mx-auto max-w-lg space-y-12">
@@ -137,25 +131,25 @@ export default function HomePage() {
           viewport={{ once: true }}
           className="mb-12 text-center text-3xl font-bold"
         >
-          In <span className="gradient-text-gold">Zahla</span>
+          In <span className="gradient-text">Zahlen</span>
         </motion.h2>
-        <div className="stagger-fade mx-auto grid max-w-lg grid-cols-2 gap-4">
+        <div className="mx-auto grid max-w-lg grid-cols-2 gap-4">
           {[
-            { value: '35+', label: 'Johr', icon: '🎵' },
-            { value: '1.5M', label: 'Bsucher', icon: '🎉' },
+            { value: '35+', label: 'Jahre', icon: '🎵' },
+            { value: '1.5M', label: 'Besucher', icon: '🎉' },
             { value: '1000+', label: 'Events', icon: '🎧' },
-            { value: '\u221E', label: 'Erinnerunga', icon: '🪩' },
+            { value: '\u221E', label: 'Erinnerungen', icon: '🪩' },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="glass-card gradient-border card-depth rounded-2xl p-6 text-center"
+              className="glass-card rounded-2xl p-6 text-center"
             >
               <div className="mb-2 text-2xl">{stat.icon}</div>
-              <div className="text-4xl font-bold gradient-text">{stat.value}</div>
+              <div className="text-4xl font-bold text-shake-text">{stat.value}</div>
               <div className="mt-1 text-sm text-shake-text-muted">{stat.label}</div>
             </motion.div>
           ))}
@@ -182,7 +176,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/create"
-            className="pulse-neon shine-sweep inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-shake-neon-pink to-shake-neon-purple px-8 py-4 text-lg font-semibold text-white transition-all hover:opacity-90 hover:scale-105"
+            className="pulse-neon inline-flex items-center gap-2 rounded-full bg-shake-neon-pink px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-shake-neon-pink/90"
           >
             <PlusCircle className="h-5 w-5" />
             Jetzt erzähla
