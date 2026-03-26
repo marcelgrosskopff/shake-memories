@@ -8,6 +8,8 @@ import { SongSearch, type SpotifyTrack } from './song-search'
 
 interface SpecialTemplatesProps {
   onComplete: (data: { type: string; images: string[]; files: File[]; song?: SpotifyTrack }) => void
+  onSelectionChange?: (hasSelection: boolean) => void
+  onBack?: () => void
 }
 
 const TEMPLATES = [
@@ -123,7 +125,7 @@ const TEMPLATES = [
   },
 ]
 
-export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
+export function SpecialTemplates({ onComplete, onSelectionChange, onBack }: SpecialTemplatesProps) {
   const [selected, setSelected] = useState<string | null>(null)
   const [images, setImages] = useState<(string | null)[]>([])
   const [files, setFiles] = useState<File[]>([])
@@ -172,6 +174,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                 setSelected(tmpl.id)
                 setImages(new Array(tmpl.slots.length).fill(null))
                 setFiles(new Array(tmpl.slots.length).fill(null))
+                onSelectionChange?.(true)
               }}
               className="relative overflow-hidden rounded-2xl"
               style={{ height: '160px' }}
@@ -208,6 +211,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
                 setSelected(tmpl.id)
                 setImages(new Array(tmpl.slots.length).fill(null))
                 setFiles(new Array(tmpl.slots.length).fill(null))
+                onSelectionChange?.(true)
               }}
               className="relative overflow-hidden rounded-2xl"
               style={{ height: '120px' }}
@@ -257,7 +261,7 @@ export function SpecialTemplates({ onComplete }: SpecialTemplatesProps) {
       <div className="relative">
       {/* Header with back - styled with accent */}
       <button
-        onClick={() => { setSelected(null); setImages([]); setFiles([]); setAnswers({}); setSelectedSong(null) }}
+        onClick={() => { setSelected(null); setImages([]); setFiles([]); setAnswers({}); setSelectedSong(null); onSelectionChange?.(false) }}
         className="flex items-center gap-2 pt-2"
       >
         <div

@@ -49,6 +49,7 @@ export default function CreatePage() {
   const [recordedType, setRecordedType] = useState<'audio' | 'video' | null>(null)
   const [templateData, setTemplateData] = useState<{ type: string; images: string[]; files: File[] } | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [templateSelected, setTemplateSelected] = useState(false)
   const [selectedMood, setSelectedMood] = useState<number | null>(null)
   const [selectedAvatar, setSelectedAvatar] = useState<number>(0)
   const createStory = useCreateStory()
@@ -320,33 +321,35 @@ export default function CreatePage() {
       <div className="pointer-events-none fixed inset-0 z-0" style={{ background: detailsGlow }} />
 
       <div className="relative z-10 px-4 pt-6">
-      {/* Header with mode identity */}
-      <div className="mb-4 flex items-center gap-3">
-        <button
-          onClick={() => {
-            if (step === 'details') setStep('create')
-            else if (step === 'create') setMode('choose')
-          }}
-          className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
-          style={{
-            backgroundColor: `${theme.accent}15`,
-            border: `1px solid ${theme.accent}30`,
-          }}
-        >
-          <ArrowLeft className="h-5 w-5 text-shake-text" />
-        </button>
-        <div className="flex items-center gap-2">
-          <div
-            className="flex h-7 w-7 items-center justify-center rounded-lg"
-            style={{ backgroundColor: `${theme.accent}20`, color: theme.accent }}
+      {/* Header - hidden when inside a specific template (template has its own nav) */}
+      {!(mode === 'template' && templateSelected) && (
+        <div className="mb-4 flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (step === 'details') setStep('create')
+              else if (step === 'create') setMode('choose')
+            }}
+            className="flex h-9 w-9 items-center justify-center rounded-full active:scale-95 transition-all"
+            style={{
+              backgroundColor: `${theme.accent}15`,
+              border: `1px solid ${theme.accent}30`,
+            }}
           >
-            {theme.icon}
+            <ArrowLeft className="h-5 w-5 text-shake-text" />
+          </button>
+          <div className="flex items-center gap-2">
+            <div
+              className="flex h-7 w-7 items-center justify-center rounded-lg"
+              style={{ backgroundColor: `${theme.accent}20`, color: theme.accent }}
+            >
+              {theme.icon}
+            </div>
+            <h1 className="text-lg font-semibold" style={{ color: theme.accent }}>
+              {theme.label}
+            </h1>
           </div>
-          <h1 className="text-lg font-semibold" style={{ color: theme.accent }}>
-            {theme.label}
-          </h1>
         </div>
-      </div>
+      )}
 
       <AnimatePresence mode="wait">
         {/* Create step */}
@@ -524,7 +527,11 @@ export default function CreatePage() {
             {/* Template mode */}
             {mode === 'template' && (
               <div className="space-y-4">
-                <SpecialTemplates onComplete={handleTemplateComplete} />
+                <SpecialTemplates
+                  onComplete={handleTemplateComplete}
+                  onSelectionChange={setTemplateSelected}
+                  onBack={() => setMode('choose')}
+                />
                 <textarea
                   value={text}
                   onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
@@ -534,14 +541,21 @@ export default function CreatePage() {
               </div>
             )}
 
-            {/* Continue button */}
-            <button
-              onClick={() => setStep('details')}
-              disabled={!canProceed}
-              className="mt-4 w-full rounded-full bg-shake-neon-pink px-6 py-3 font-medium text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-shake-neon-pink/90"
-            >
-              Weiter
-            </button>
+            {/* Continue button - sticky at bottom */}
+            <div className="sticky bottom-20 pt-4 pb-2">
+              <button
+                onClick={() => setStep('details')}
+                disabled={!canProceed}
+                className="w-full rounded-full px-6 py-3.5 font-semibold text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed active:scale-[0.98]"
+                style={{
+                  background: canProceed
+                    ? `linear-gradient(135deg, ${theme.accent}, ${theme.accent}cc)`
+                    : `${theme.accent}30`,
+                }}
+              >
+                Weiter
+              </button>
+            </div>
           </motion.div>
         )}
 
